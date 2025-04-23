@@ -46,7 +46,7 @@ export const modules = {
         // No quiz defined here, quiz is with the Symmetric/Asymmetric lesson
     },
 // Update the encryption-types module in modules.js
-'encryption-types': {
+    'encryption-types': {
     title: 'Symmetric and Asymmetric Encryption',
     html: `
         <h2>Symmetric and Asymmetric Encryption: A Comprehensive Lesson</h2>
@@ -251,35 +251,34 @@ export const modules = {
             </div>
         </div>
     `,
-        // Define quiz questions for this specific lesson
-        quiz: [
-            {
-                question: "Which type of encryption uses the same key for both encryption and decryption?",
-                options: ["Symmetric", "Asymmetric", "Hashing", "Hybrid"],
-                answer: "Symmetric"
-            },
-            {
-                question: "What is the main advantage of asymmetric encryption over symmetric encryption?",
-                options: ["It's faster for bulk data", "It solves the key distribution problem", "It uses shorter keys", "It doesn't require algorithms"],
-                answer: "It solves the key distribution problem"
-            },
-            {
-                question: "In a hybrid encryption system (like HTTPS), what is asymmetric encryption typically used for?",
-                options: ["Encrypting the entire data stream", "Hashing passwords", "Securely exchanging a symmetric key", "Compressing data"],
-                answer: "Securely exchanging a symmetric key"
-            },
-            {
-                question: "Which of these is a common symmetric encryption algorithm?",
-                options: ["RSA", "ECC", "AES", "SHA-256"],
-                answer: "AES"
-            },
-             {
-                question: "Which of these is a common asymmetric encryption algorithm?",
-                options: ["AES", "DES", "RSA", "ChaCha20"],
-                answer: "RSA"
-            }
-            // Add more quiz questions relevant to the Symmetric/Asymmetric lesson here
-        ]
+    // Define quiz questions for this specific lesson
+    quiz: [
+        {
+            question: "Which type of encryption uses the same key for both encryption and decryption?",
+            options: ["Symmetric", "Asymmetric", "Hashing", "Hybrid"],
+            answer: "Symmetric"
+        },
+        {
+            question: "What is the main advantage of asymmetric encryption over symmetric encryption?",
+            options: ["It's faster for bulk data", "It solves the key distribution problem", "It uses shorter keys", "It doesn't require algorithms"],
+            answer: "It solves the key distribution problem"
+        },
+        {
+            question: "In a hybrid encryption system (like HTTPS), what is asymmetric encryption typically used for?",
+            options: ["Encrypting the entire data stream", "Hashing passwords", "Securely exchanging a symmetric key", "Compressing data"],
+            answer: "Securely exchanging a symmetric key"
+        },
+        {
+            question: "Which of these is a common symmetric encryption algorithm?",
+            options: ["RSA", "ECC", "AES", "SHA-256"],
+            answer: "AES"
+        },
+        {
+            question: "Which of these is a common asymmetric encryption algorithm?",
+            options: ["AES", "DES", "RSA", "ChaCha20"],
+            answer: "RSA"
+        }
+    ],
     // Add initialization function for slides
     init: function(contentElement) {
         const slides = contentElement.querySelectorAll('.slide');
