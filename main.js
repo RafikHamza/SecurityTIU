@@ -89,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Set the HTML content from the module data
             contentArea.innerHTML = moduleData.html;
             console.log(`Content for ${moduleName} loaded into the DOM.`);
+             // Initialize module-specific functionality if it exists
+            if (moduleData.init && typeof moduleData.init === 'function') {
+                moduleData.init(contentArea);
+            }
 
             // After loading content, check for and attach event listeners to any quiz buttons
             // This needs to be done *after* the new content is added to the DOM
