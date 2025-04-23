@@ -4,89 +4,11 @@
 // Export an object where keys are module names (matching data-module attributes)
 // and values contain the HTML content and potentially quiz questions.
 
-// --- IndexedDB Setup and Helper Functions ---
-const DB_NAME = 'ProgressDB';
-const DB_VERSION = 1;
-const STORE_NAME = 'users';
-
-let db;
-
-// Function to open the IndexedDB database
-function openDatabase() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = (event) => {
-            db = event.target.result;
-            // Create the object store if it doesn't exist
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                db.createObjectStore(STORE_NAME, { keyPath: 'pseudoid' });
-                console.log(`IndexedDB object store "${STORE_NAME}" created.`);
-            }
-        };
-
-        request.onsuccess = (event) => {
-            db = event.target.result;
-            console.log('IndexedDB database opened successfully.');
-            resolve(db);
-        };
-
-        request.onerror = (event) => {
-            console.error('IndexedDB database error:', event.target.error);
-            reject(event.target.error);
-        };
-    });
-}
-
-// Function to get progress data for a specific pseudoid
-function getProgress(pseudoid) {
-    return new Promise((resolve, reject) => {
-        if (!db) {
-            reject('IndexedDB not initialized.');
-            return;
-        }
-        const transaction = db.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.get(pseudoid);
-
-        request.onsuccess = (event) => {
-            resolve(event.target.result); // Returns the user object or undefined
-        };
-
-        request.onerror = (event) => {
-            console.error('Error getting progress:', event.target.error);
-            reject(event.target.error);
-        };
-    });
-}
-
-// Function to save or update progress data for a specific pseudoid
-function saveProgress(userData) {
-    return new Promise((resolve, reject) => {
-        if (!db) {
-            reject('IndexedDB not initialized.');
-            return;
-        }
-        const transaction = db.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.put(userData); // Use put to add or update
-
-        request.onsuccess = () => {
-            console.log('Progress saved successfully.');
-            resolve();
-        };
-
-        request.onerror = (event) => {
-            console.error('Error saving progress:', event.target.error);
-            reject(event.target.error);
-        };
-    });
-}
-
-// Open the database when the script loads
-openDatabase().catch(error => console.error("Failed to open IndexedDB:", error));
-
-// --- Module Definitions ---
+// Import IndexedDB functions from main.js
+// NOTE: This creates a circular dependency if main.js also imports from modules.js.
+// A better approach in a larger app would be a dedicated data/db module.
+// For this structure, we'll assume main.js provides the db functions globally or passes them.
+// Let's modify main.js to pass the db functions to the profile init.
 
 export const modules = {
     home: {
@@ -554,7 +476,8 @@ export const modules = {
             </section>
         `,
         // Add an init function specifically for the profile page
-        init: function(contentElement) {
+        // This init function will now take the IndexedDB functions as arguments
+        init: function(contentElement, dbFunctions) {
              console.log('Initializing profile module...');
              const pseudoidInput = contentElement.querySelector('#pseudoid-input');
              const loadButton = contentElement.querySelector('#load-progress-button');
@@ -563,11 +486,19 @@ export const modules = {
              const completedModulesDiv = contentElement.querySelector('#completed-modules');
              const quizScoresDiv = contentElement.querySelector('#quiz-scores');
 
-             let currentPseudoid = null; // Variable to store the currently loaded pseudoid
+             // Ensure dbFunctions are available
+             if (!dbFunctions || !dbFunctions.loadProgressFromDB || !dbFunctions.saveProgressToDB) {
+                 console.error('IndexedDB functions not provided to profile module init.');
+                 // Disable buttons or show error message if DB functions are missing
+                 if(loadButton) loadButton.disabled = true;
+                 if(saveButton) saveButton.disabled = true;
+                 currentPseudoidDisplay.textContent = 'Error: Database functions missing.';
+                 currentPseudoidDisplay.style.color = 'red';
+                 return; // Stop initialization if DB functions are not available
+             }
 
              // Function to update the displayed pseudoid
              function updatePseudoidDisplay(pseudoid) {
-                 currentPseudoid = pseudoid; // Update the variable
                  if (pseudoid) {
                      currentPseudoidDisplay.textContent = `Current Pseudoid: ${pseudoid}`;
                      currentPseudoidDisplay.style.color = '#28a745'; // Green color
@@ -577,10 +508,11 @@ export const modules = {
                  }
              }
 
-             // Function to display progress data on the page
+             // Function to display loaded progress data
              function displayProgress(progress) {
                  if (progress) {
                      completedModulesDiv.innerHTML = progress.completedModules && progress.completedModules.length > 0 ? progress.completedModules.join(', ') : 'No modules completed yet.';
+
                      if (progress.quizScores && Object.keys(progress.quizScores).length > 0) {
                          quizScoresDiv.innerHTML = Object.entries(progress.quizScores)
                              .map(([quizType, score]) => `<p>${quizType}: ${score.score}/${score.total}</p>`)
@@ -589,79 +521,58 @@ export const modules = {
                          quizScoresDiv.innerHTML = 'No quiz scores recorded yet.';
                      }
                  } else {
-                     // Clear displayed progress if no data is provided
-                     completedModulesDiv.innerHTML = 'No modules completed yet.';
-                     quizScoresDiv.innerHTML = 'No quiz scores recorded yet.';
-                 }
-             }
-
-
-             // Function to load progress from IndexedDB
-             async function loadProgress(pseudoid) {
-                 if (!pseudoid) {
-                     alert('Please enter a Pseudoid to load progress.');
-                     return;
-                 }
-                 try {
-                     const progress = await getProgress(pseudoid); // Use the IndexedDB helper
-                     if (progress) {
-                         console.log('Loaded progress:', progress);
-                         displayProgress(progress); // Display the loaded data
-                         alert(`Progress loaded for Pseudoid: ${pseudoid}`);
-                         updatePseudoidDisplay(pseudoid);
-                     } else {
-                         alert(`No saved progress found for Pseudoid: ${pseudoid}`);
-                         displayProgress(null); // Clear displayed progress
-                         updatePseudoidDisplay(''); // Clear display if not found
-                     }
-                 } catch (error) {
-                     console.error('Error loading progress:', error);
-                     alert('An error occurred while loading progress.');
-                     displayProgress(null);
-                     updatePseudoidDisplay('');
-                 }
-             }
-
-             // Function to save progress to IndexedDB
-             async function saveCurrentProgress() {
-                 if (!currentPseudoid) {
-                     alert('Please load or enter a Pseudoid first.');
-                     return;
-                 }
-                 // TODO: Collect current progress data (e.g., completed modules, quiz scores)
-                 // This is a placeholder. You would need a way to track completed modules
-                 // and quiz scores globally or fetch them here.
-                 const currentProgressData = {
-                     pseudoid: currentPseudoid,
-                     completedModules: ['Encryption Basics'], // Placeholder
-                     quizScores: {
-                         'encryption-types': { score: 3, total: 5 }, // Placeholder
-                         'compression': { score: 2, total: 3 } // Placeholder
-                     }
-                 };
-
-                 try {
-                     await saveProgress(currentProgressData); // Use the IndexedDB helper
-                     alert(`Progress saved for Pseudoid: ${currentPseudoid}`);
-                     console.log('Saved progress:', currentProgressData);
-                     // Optionally refresh the displayed progress after saving
-                     displayProgress(currentProgressData);
-                 } catch (error) {
-                     console.error('Error saving progress:', error);
-                     alert('An error occurred while saving progress.');
+                      completedModulesDiv.innerHTML = 'No modules completed yet.';
+                      quizScoresDiv.innerHTML = 'No quiz scores recorded yet.';
                  }
              }
 
 
              // Add event listeners to the buttons
              if (loadButton) {
-                 loadButton.addEventListener('click', () => {
+                 loadButton.addEventListener('click', async () => {
                      const pseudoid = pseudoidInput.value.trim();
-                     loadProgress(pseudoid);
+                     if (!pseudoid) {
+                         alert('Please enter a Pseudoid to load progress.');
+                         return;
+                     }
+                     const progress = await dbFunctions.loadProgressFromDB(pseudoid);
+                     if (progress) {
+                         console.log('Loaded progress:', progress);
+                         displayProgress(progress);
+                         alert(`Progress loaded for Pseudoid: ${pseudoid}`);
+                         updatePseudoidDisplay(pseudoid);
+                         // Store loaded pseudoid globally or in session storage if needed elsewhere
+                         // For simplicity, we'll rely on the display for now.
+                     } else {
+                         alert(`No saved progress found for Pseudoid: ${pseudoid}`);
+                         displayProgress(null); // Clear displayed progress
+                         updatePseudoidDisplay(''); // Clear display if not found
+                     }
                  });
              }
              if (saveButton) {
-                 saveButton.addEventListener('click', saveCurrentProgress); // Call saveCurrentProgress
+                 saveButton.addEventListener('click', async () => {
+                     const pseudoid = pseudoidInput.value.trim();
+                     if (!pseudoid) {
+                         alert('Please enter a Pseudoid to save progress.');
+                         return;
+                     }
+                     // TODO: Collect current progress data (e.g., completed modules, quiz scores)
+                     // This requires accessing data stored globally or fetching it.
+                     // For now, we'll use placeholder data. In a real app, you'd get this from main.js state.
+                     const currentProgress = {
+                         completedModules: ['Encryption Basics'], // Placeholder - replace with actual data
+                         quizScores: {
+                             'encryption-types': { score: 3, total: 5 }, // Placeholder - replace with actual data
+                             'compression': { score: 2, total: 3 } // Placeholder - replace with actual data
+                         }
+                     };
+
+                     await dbFunctions.saveProgressToDB(pseudoid, currentProgress);
+                     alert(`Progress saved for Pseudoid: ${pseudoid}`);
+                     console.log('Saved progress:', currentProgress);
+                     updatePseudoidDisplay(pseudoid);
+                 });
              }
 
              // Optional: Load progress automatically if a pseudoid is already saved in session/local storage
