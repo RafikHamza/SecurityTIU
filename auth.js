@@ -154,3 +154,62 @@ export function getUserScores() {
 .login-button:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
+// Improved hash function (in a real app, use a proper crypto library)
+function simpleHash(string) {
+    let hash = 0;
+    if (string.length === 0) return hash;
+    for (let i = 0; i < string.length; i++) {
+        const char = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString(16); // Convert to hex string
+}
+
+export function register(username, password) {
+    // Basic validation
+    if (!username || username.length < 3) {
+        return { success: false, message: 'Username must be at least 3 characters' };
+    }
+    if (!password || password.length < 6) {
+        return { success: false, message: 'Password must be at least 6 characters' };
+    }
+    
+    if (users[username]) {
+        return { success: false, message: 'Username already exists' };
+    }
+    
+    // Hash the password before storing
+    const hashedPassword = simpleHash(password);
+    
+    users[username] = {
+        password: hashedPassword,
+        progress: {},
+        quizScores: {}
+    };
+    
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // Auto-login after registration
+    currentUser = username;
+    localStorage.setItem('currentUser', username);
+    
+    return { success: true, message: 'Registration successful!' };
+}
+
+export function login(username, password) {
+    const user = users[username];
+    if (!user) {
+        return { success: false, message: 'Invalid username or password' };
+    }
+    
+    // Check hashed password
+    const hashedPassword = simpleHash(password);
+    if (user.password !== hashedPassword) {
+        return { success: false, message: 'Invalid username or password' };
+    }
+    
+    currentUser = username;
+    localStorage.setItem('currentUser', username);
+    return { success: true, message: 'Login successful!' };
+}
