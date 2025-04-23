@@ -132,7 +132,7 @@ async function setCurrentPseudoid(pseudoid) {
             currentUserProgress = { pseudoid: pseudoid, completedModules: [], quizScores: {} };
             console.log('Initialized new progress for current pseudoid:', currentUserProgress);
              // Optionally save the initial empty progress immediately
-             // saveProgressToDB(pseudoid, currentUserProgress);
+             // await saveProgressToDB(pseudoid, currentUserProgress); // Await the save
         }
     } else {
         sessionStorage.removeItem('currentPseudoid');
@@ -141,6 +141,7 @@ async function setCurrentPseudoid(pseudoid) {
     }
     // TODO: Update UI elements (like the profile page display) if the pseudoid changes
     // This might require calling the profile module's display function if the profile page is currently loaded.
+    // A better approach is for the profile module's init to read the global state when it loads.
 }
 
 // Function to get the current pseudoid
@@ -151,6 +152,30 @@ function getCurrentPseudoid() {
 // Function to get the current user's progress
 function getCurrentUserProgress() {
     return currentUserProgress; // Return the globally tracked progress object
+}
+
+// Function to update the current user's progress object (e.g., after a quiz)
+function updateCurrentUserProgress(moduleName, score, totalQuestions) {
+    if (!currentPseudoid) {
+        console.warn('Cannot update progress: No Pseudoid set.');
+        return;
+    }
+    // Ensure quizScores object exists
+    if (!currentUserProgress.quizScores) {
+        currentUserProgress.quizScores = {};
+    }
+    // Update the score for the specific module
+    currentUserProgress.quizScores[moduleName] = { score: score, total: totalQuestions };
+
+    // TODO: Add logic here to mark modules as completed based on criteria (e.g., quiz score threshold)
+    // Example: if (score / totalQuestions >= 0.8 && !currentUserProgress.completedModules.includes(moduleName)) {
+    //     currentUserProgress.completedModules.push(moduleName);
+    //     console.log(`Module "${moduleName}" marked as completed.`);
+    // }
+
+    console.log('Current user progress updated:', currentUserProgress);
+    // After updating the state, save it to the database
+    saveProgressToDB(currentPseudoid, currentUserProgress);
 }
 
 
@@ -259,7 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // This is crucial for modules with interactive elements like the slideshow or profile page.
             if (typeof moduleData.init === 'function') {
                 console.log(`Calling init function for module: ${moduleName}`);
-                // Pass the content area and the IndexedDB functions to the profile init
+                // Pass the content area and the IndexedDB functions/state getters to the profile init
                 if (moduleName === 'profile') {
                     moduleData.init(contentArea, {
                         loadProgressFromDB: loadProgressFromDB,
@@ -370,6 +395,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 modalContentArea.innerHTML = quizHtml;
 
+                // Add event listener for the submit button (using event delegation or direct)
+                const submitButton = modalContentArea.querySelector('.submit-quiz');
+                if (submitButton) {
+                     submitButton.addEventListener('click', handleSubmitQuiz);
+                }
+
                 // Need to re-add the close button inside the modal content after clearing it
                  const closeButtonHtml = `<button class="close-modal" style="margin-top: 15px; margin-left: 10px;">Close</button>`;
                  modalContentArea.insertAdjacentHTML('beforeend', closeButtonHtml);
@@ -387,7 +418,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Function to handle quiz submission (Placeholder)
+    // Function to handle quiz submission
     async function handleSubmitQuiz(event) {
         const moduleName = event.target.getAttribute('data-quiz-module');
         console.log(`Quiz submitted for module: ${moduleName}`);
@@ -413,14 +444,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log(`Score: ${score}/${totalQuestions}`);
 
         // ==============================================================
-        // TODO: IMPLEMENT QUIZ RESULT DISPLAY AND POTENTIALLY SAVE SCORE
-        // 1. Display the score to the user (e.g., in the modal or a new section).
-        // 2. Provide feedback on correct/incorrect answers.
-        // 3. Potentially save the score (requires localStorage using the pseudoid).
-        // 4. Offer an option to retry the quiz or close the modal.
+        // Display Quiz Results in the modal
         // ==============================================================
 
-        // Placeholder: Display score in the modal
         const modalContentArea = quizModal.querySelector('.modal-content');
         if (modalContentArea) {
             modalContentArea.innerHTML = `
@@ -452,36 +478,35 @@ document.addEventListener('DOMContentLoaded', async () => {
              // Close button listener is handled by the delegated listener on document.body
         }
 
-        // --- Save score to IndexedDB ---
+        // --- Update and Save progress to IndexedDB ---
         const currentId = getCurrentPseudoid();
          if (currentId) {
-             console.log(`Saving quiz score for ${currentId} - ${moduleName}: ${score}/${totalQuestions}`);
-             // Load existing progress first to update it
-             const progress = await loadProgressFromDB(currentId) || { pseudoid: currentId, completedModules: [], quizScores: {} };
+             console.log(`Updating and saving quiz score for ${currentId} - ${moduleName}: ${score}/${totalQuestions}`);
 
-             // Update quiz score for this module
-             progress.quizScores[moduleName] = { score: score, total: totalQuestions };
+             // Update the global currentUserProgress object
+             updateCurrentUserProgress(moduleName, score, totalQuestions);
 
-             // TODO: Add logic to mark modules as completed, perhaps after a certain quiz score threshold?
-             // Example: if (score / totalQuestions > 0.8 && !progress.completedModules.includes(moduleName)) {
-             //     progress.completedModules.push(moduleName);
-             // }
+             // The updateCurrentUserProgress function already calls saveProgressToDB
+             console.log('Quiz score updated in state and saved to IndexedDB.');
 
-             await saveProgressToDB(currentId, progress);
-             console.log('Quiz score saved to IndexedDB.');
              // After saving, if the profile page is currently loaded, refresh its display
-             const currentModule = contentArea.querySelector('h2')?.textContent; // Get the title of the currently displayed module
-             if (currentModule && currentModule.includes(modules.profile.title)) {
-                 // If the profile page is visible, reload its content and initialize it
-                 // This will refresh the displayed progress data
-                 loadContent('profile');
+             const currentModuleTitleElement = contentArea.querySelector('h2');
+             if (currentModuleTitleElement) {
+                  const currentModuleTitle = currentModuleTitleElement.textContent;
+                 if (currentModuleTitle && currentModuleTitle.includes(modules.profile.title)) {
+                     console.log('Profile page is currently loaded. Refreshing display.');
+                     // If the profile page is visible, reload its content and initialize it
+                     // This will refresh the displayed progress data from the updated state
+                     loadContent('profile'); // Reload the profile module
+                 }
              }
+
 
          } else {
              console.warn('No Pseudoid set. Quiz score not saved.');
              alert('Quiz finished, but score was not saved because no Pseudoid is set. Please go to "My Progress" to set one.');
          }
-        // --- End Save score to IndexedDB ---
+        // --- End Update and Save progress to IndexedDB ---
     }
 
     // TODO: Function to display user profile data (requires data storage)
