@@ -131,64 +131,62 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Quiz Logic ---
 
     // Function to handle quiz button clicks
-    function handleQuizButtonClick(event) {
-        // Get the module name from the data attribute
-        const moduleName = event.target.getAttribute('data-quiz-module');
-        console.log(`Quiz button clicked for module: ${moduleName}`);
+    // Function to handle quiz button clicks
+function handleQuizButtonClick(event) {
+    // Get the module name from the data attribute
+    const moduleName = event.target.getAttribute('data-quiz-module');
+    console.log(`Quiz button clicked for module: ${moduleName}`);
 
-        const moduleData = modules[moduleName];
+    const moduleData = modules[moduleName];
 
-        if (moduleData && moduleData.quiz && quizModal) {
-            const quizQuestions = moduleData.quiz;
-            const modalContentArea = quizModal.querySelector('.modal-content'); // Assuming you have a div with class 'modal-content' inside #quiz-modal
+    if (moduleData && moduleData.quiz && quizModal) {
+        const quizQuestions = moduleData.quiz;
+        const modalContentArea = quizModal.querySelector('.modal-content'); // Assuming you have a div with class 'modal-content' inside #quiz-modal
 
-            if (modalContentArea) {
-                // Clear previous quiz content
-                modalContentArea.innerHTML = '';
+        if (modalContentArea) {
+            // Clear previous quiz content
+            modalContentArea.innerHTML = '';
 
-                // Add quiz title and questions
-                let quizHtml = `<h3>${moduleData.title} Quiz</h3>`;
-                quizQuestions.forEach((q, index) => {
-                    quizHtml += `
-                        <div class="quiz-question">
-                            <p>${index + 1}. ${q.question}</p>
-                            <div class="quiz-options">
-                                ${q.options.map((option, optIndex) => `
-                                    <label>
-                                        <input type="radio" name="question-${index}" value="${option}">
-                                        ${option}
-                                    </label><br>
-                                `).join('')}
-                            </div>
+            // Add quiz title and questions
+            let quizHtml = `<h3>${moduleData.title} Quiz</h3>`;
+            quizQuestions.forEach((q, index) => {
+                quizHtml += `
+                    <div class="quiz-question">
+                        <p>${index + 1}. ${q.question}</p>
+                        <div class="quiz-options">
+                            ${q.options.map((option, optIndex) => `
+                                <label>
+                                    <input type="radio" name="question-${index}" value="${option}">
+                                    ${option}
+                                </label><br>
+                            `).join('')}
                         </div>
-                    `;
-                });
+                    </div>
+                `;
+            });
 
-                // Add a submit button and a close button
-                quizHtml += `<button class="submit-quiz" data-quiz-module="${moduleName}">Submit Quiz</button>`;
-                quizHtml += `<button class="close-modal" style="margin-left: 10px;">Close</button>`; // Added margin for spacing
+            // Add a submit button and a close button
+            quizHtml += `<button class="submit-quiz" data-quiz-module="${moduleName}">Submit Quiz</button>`;
+            quizHtml += `<button class="close-modal" style="margin-left: 10px;">Close</button>`;
 
-                modalContentArea.innerHTML = quizHtml;
+            modalContentArea.innerHTML = quizHtml;
 
-                // Add event listener for the submit button (using event delegation or direct)
-                const submitButton = modalContentArea.querySelector('.submit-quiz');
-                if (submitButton) {
-                     submitButton.addEventListener('click', handleSubmitQuiz);
-                }
-
-
-                showModal(quizModal); // Show the quiz modal
-
-            } else {
-                console.error('Modal content area (.modal-content) not found inside #quiz-modal.');
-                alert(`Quiz feature for ${moduleName} is not yet fully implemented.\n\nCould not find modal content area.`); // Fallback alert
+            // Add event listener for the submit button
+            const submitButton = modalContentArea.querySelector('.submit-quiz');
+            if (submitButton) {
+                submitButton.addEventListener('click', handleSubmitQuiz);
             }
-        } else {
-            console.warn(`No quiz data found for module: ${moduleName}`);
-            alert(`Quiz for ${moduleName} is not available yet.`);
-        }
-    }
 
+            showModal(quizModal); // Show the quiz modal
+        } else {
+            console.error('Modal content area (.modal-content) not found inside #quiz-modal.');
+            alert(`Quiz feature for ${moduleName} is not yet fully implemented.\n\nCould not find modal content area.`);
+        }
+    } else {
+        console.warn(`No quiz data found for module: ${moduleName}`);
+        alert(`Quiz for ${moduleName} is not available yet.`);
+    }
+}
     // Function to handle quiz submission (Placeholder)
     function handleSubmitQuiz(event) {
         const moduleName = event.target.getAttribute('data-quiz-module');
