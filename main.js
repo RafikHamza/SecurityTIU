@@ -2,19 +2,153 @@
 
 // Import the modules data from modules.js
 import { modules } from './modules.js';
-// auth.js is no longer needed, so remove the import:
-// import { showAuthModal } from './auth.js';
+
+// --- IndexedDB Setup and Functions ---
+const DB_NAME = 'LearningHubDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'userProgress';
+
+let db;
+
+// Function to open the IndexedDB database
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = (event) => {
+            // This runs if the database is new or the version is updated
+            db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'pseudoid' });
+                console.log(`IndexedDB object store '${STORE_NAME}' created.`);
+            }
+        };
+
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            console.log('IndexedDB opened successfully.');
+            resolve(db);
+        };
+
+        request.onerror = (event) => {
+            console.error('IndexedDB error:', event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
+// Function to load user progress from IndexedDB
+async function loadProgressFromDB(pseudoid) {
+    if (!db) {
+        console.warn('IndexedDB not open. Attempting to open...');
+        try {
+            await openDatabase();
+        } catch (error) {
+            console.error('Failed to open DB for loading:', error);
+            return null;
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(pseudoid);
+
+        request.onsuccess = (event) => {
+            console.log(`IndexedDB load success for ${pseudoid}:`, event.target.result);
+            resolve(event.target.result); // Returns the progress object or undefined
+        };
+
+        request.onerror = (event) => {
+            console.error(`IndexedDB load error for ${pseudoid}:`, event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
+// Function to save user progress to IndexedDB
+async function saveProgressToDB(pseudoid, progressData) {
+     if (!db) {
+        console.warn('IndexedDB not open. Attempting to open...');
+         try {
+            await openDatabase();
+        } catch (error) {
+            console.error('Failed to open DB for saving:', error);
+            return;
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+
+        // Add the pseudoid to the progress data before saving
+        progressData.pseudoid = pseudoid;
+
+        const request = store.put(progressData); // Use put() to add or update
+
+        request.onsuccess = () => {
+            console.log(`IndexedDB save success for ${pseudoid}.`);
+            resolve();
+        };
+
+        request.onerror = (event) => {
+            console.error(`IndexedDB save error for ${pseudoid}:`, event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
+// --- Global State (to hold current pseudoid) ---
+let currentPseudoid = null;
+
+// Function to set the current pseudoid
+function setCurrentPseudoid(pseudoid) {
+    currentPseudoid = pseudoid;
+    console.log('Current Pseudoid set:', currentPseudoid);
+    // You might also update UI elements here or save to sessionStorage
+    // to persist across page reloads within a session.
+    if (pseudoid) {
+        sessionStorage.setItem('currentPseudoid', pseudoid);
+    } else {
+        sessionStorage.removeItem('currentPseudoid');
+    }
+}
+
+// Function to get the current pseudoid
+function getCurrentPseudoid() {
+    // Check session storage first, then the global variable
+    return sessionStorage.getItem('currentPseudoid') || currentPseudoid;
+}
 
 
-document.addEventListener('DOMContentLoaded', () => {
+// --- Main Application Logic ---
+
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM fully loaded and parsed');
 
-    // Get main elements
+    // Open the database when the DOM is ready
+    try {
+        await openDatabase();
+        console.log('Database ready.');
+         // Attempt to load pseudoid from session storage on load
+         const savedPseudoid = sessionStorage.getItem('currentPseudoid');
+         if (savedPseudoid) {
+             setCurrentPseudoid(savedPseudoid);
+             console.log('Loaded pseudoid from session storage:', savedPseudoid);
+             // You might want to automatically load the profile page or display a message
+             // indicating the user is "logged in" with this pseudoid.
+         }
+
+    } catch (error) {
+        console.error('Failed to initialize database:', error);
+        alert('Failed to open the progress database. Progress tracking will not work.');
+    }
+
+
+    // Get main content area and quiz modal
     const contentArea = document.getElementById('content');
     const quizModal = document.getElementById('quiz-modal');
-    // authModal is removed from index.html, so remove the reference:
-    // const authModal = document.getElementById('auth-modal');
-
 
     // Check if essential elements exist
     if (!contentArea) {
@@ -25,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Quiz modal with id="quiz-modal" not found. Quiz feature will be limited.');
         // Continue execution, but quiz functionality will be broken without the modal
     }
-     // authModal check is removed
 
 
     // --- Modal Functions (Basic show/hide for quiz modal) ---
@@ -93,7 +226,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // This is crucial for modules with interactive elements like the slideshow or profile page.
             if (typeof moduleData.init === 'function') {
                 console.log(`Calling init function for module: ${moduleName}`);
-                moduleData.init(contentArea); // Pass the content area element if needed by init
+                // Pass the content area and the IndexedDB functions to the profile init
+                if (moduleName === 'profile') {
+                    moduleData.init(contentArea, {
+                        loadProgressFromDB: loadProgressFromDB,
+                        saveProgressToDB: saveProgressToDB,
+                        setCurrentPseudoid: setCurrentPseudoid, // Pass the setter
+                        getCurrentPseudoid: getCurrentPseudoid // Pass the getter
+                    });
+                } else {
+                    moduleData.init(contentArea); // Other modules just need the content area
+                }
             }
              // --- End Module Specific Scripts Initialization ---
 
@@ -140,6 +283,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to handle quiz button clicks
     function handleQuizButtonClick(event) {
+        const currentId = getCurrentPseudoid();
+        if (!currentId) {
+            alert('Please enter your Pseudoid on the "My Progress" page first to track quiz scores.');
+            // Optionally redirect to the profile page or show the pseudoid input modal
+            loadContent('profile');
+            // Find the pseudoid input and highlight it?
+            const pseudoidInput = contentArea.querySelector('#pseudoid-input');
+            if(pseudoidInput) {
+                pseudoidInput.focus();
+                pseudoidInput.style.border = '2px solid red';
+                setTimeout(() => pseudoidInput.style.border = '', 2000); // Remove highlight after 2 seconds
+            }
+            return; // Stop here if no pseudoid is set
+        }
+
         // Get the module name from the data attribute
         const moduleName = event.target.getAttribute('data-quiz-module');
         console.log(`Quiz button clicked for module: ${moduleName}`);
@@ -202,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to handle quiz submission (Placeholder)
-    function handleSubmitQuiz(event) {
+    async function handleSubmitQuiz(event) {
         const moduleName = event.target.getAttribute('data-quiz-module');
         console.log(`Quiz submitted for module: ${moduleName}`);
 
@@ -230,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // TODO: IMPLEMENT QUIZ RESULT DISPLAY AND POTENTIALLY SAVE SCORE
         // 1. Display the score to the user (e.g., in the modal or a new section).
         // 2. Provide feedback on correct/incorrect answers.
-        // 3. Potentially save the score (requires IndexedDB using the pseudoid).
+        // 3. Potentially save the score (requires localStorage using the pseudoid).
         // 4. Offer an option to retry the quiz or close the modal.
         // ==============================================================
 
@@ -266,10 +424,28 @@ document.addEventListener('DOMContentLoaded', () => {
              // Close button listener is handled by the delegated listener on document.body
         }
 
-        // TODO: Save score to IndexedDB using the current pseudoid
-        // You would need a way to access the currently loaded pseudoid here.
-        // This might involve storing it in a global variable or fetching it from the profile module.
-        // Example: saveQuizScoreToIndexedDB(currentPseudoid, moduleName, score, totalQuestions);
+        // --- Save score to IndexedDB ---
+        const currentId = getCurrentPseudoid();
+         if (currentId) {
+             console.log(`Saving quiz score for ${currentId} - ${moduleName}: ${score}/${totalQuestions}`);
+             // Load existing progress first to update it
+             const progress = await loadProgressFromDB(currentId) || { pseudoid: currentId, completedModules: [], quizScores: {} };
+
+             // Update quiz score for this module
+             progress.quizScores[moduleName] = { score: score, total: totalQuestions };
+
+             // TODO: Add logic to mark modules as completed, perhaps after a certain quiz score threshold?
+             // Example: if (score / totalQuestions > 0.8 && !progress.completedModules.includes(moduleName)) {
+             //     progress.completedModules.push(moduleName);
+             // }
+
+             await saveProgressToDB(currentId, progress);
+             console.log('Quiz score saved to IndexedDB.');
+         } else {
+             console.warn('No Pseudoid set. Quiz score not saved.');
+             alert('Quiz finished, but score was not saved because no Pseudoid is set.');
+         }
+        // --- End Save score to IndexedDB ---
     }
 
     // TODO: Function to display user profile data (requires data storage)
@@ -309,19 +485,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial load: Load the 'home' module content when the page first loads
     loadContent('home');
     // Optional: Set the home button as active initially
-    const homeButton = document.querySelector('button[data-module="home"]');
+    const homeButton = document.querySelector('button[data-module="home']');
     if(homeButton) {
         homeButton.classList.add('active');
     }
-
-    // Authentication logic is now handled by the pseudoid input on the profile page
-    // The auth modal and auth.js file are removed.
 
 
     console.log('main.js initialization complete.');
 });
 
-// NOTE ABOUT IndexedDB for Progress:
-// IndexedDB is used in modules.js -> profile -> init for saving and loading progress.
-// You will need to enhance the quiz submission logic in main.js to get the current
-// pseudoid and call the saveProgress function from modules.js.
+// NOTE ABOUT IndexedDB or Backend:
+// Using IndexedDB for progress tracking is browser-based. Data is stored locally
+// in the user's browser. It can be cleared by the user and won't sync across devices.
+// For a more robust solution, a backend server and database would be necessary.
