@@ -280,7 +280,43 @@ export const modules = {
             }
             // Add more quiz questions relevant to the Symmetric/Asymmetric lesson here
         ]
-    },
+    // Add initialization function for slides
+    init: function(contentElement) {
+        const slides = contentElement.querySelectorAll('.slide');
+        const prevButton = contentElement.querySelector('#prev-slide');
+        const nextButton = contentElement.querySelector('#next-slide');
+        const slideCounter = contentElement.querySelector('#slide-counter');
+        let currentSlide = 0;
+        
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            
+            prevButton.disabled = currentSlide === 0;
+            nextButton.disabled = currentSlide === slides.length - 1;
+            slideCounter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
+        }
+        
+        prevButton.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        });
+        
+        nextButton.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        });
+        
+        // Initialize
+        updateSlides();
+    }
+}
+    
     compression: {
         title: 'Compression Module',
         html: `
