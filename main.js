@@ -8,6 +8,49 @@ document.addEventListener('DOMContentLoaded', () => {
         return; // Stop execution if the content area isn't found
     }
 
+    // Get the quiz modal element
+    const quizModal = document.getElementById('quiz-modal');
+    if (!quizModal) {
+        console.error('Quiz modal with id="quiz-modal" not found. Quiz feature will not work.');
+        // Continue execution, but quiz functionality will be broken
+    }
+
+    // --- Modal Functions ---
+
+    // Function to display the quiz modal
+    function showQuizModal() {
+        if (quizModal) {
+            quizModal.style.display = 'block';
+            console.log('Quiz modal shown.');
+        }
+    }
+
+    // Function to hide the quiz modal
+    function hideQuizModal() {
+        if (quizModal) {
+            quizModal.style.display = 'none';
+            // Optional: Clear modal content when hiding
+            // quizModal.querySelector('.modal-content').innerHTML = '';
+            console.log('Quiz modal hidden.');
+        }
+    }
+
+    // TODO: Add an event listener to close the modal (e.g., clicking a close button or outside the modal)
+    // Example: Add a close button inside the modal HTML and add a listener here
+    // const closeButton = quizModal.querySelector('.close-button');
+    // if (closeButton) {
+    //     closeButton.addEventListener('click', hideQuizModal);
+    // }
+    // Example: Close modal if user clicks outside the modal content
+    // window.addEventListener('click', (event) => {
+    //     if (event.target === quizModal) {
+    //         hideQuizModal();
+    //     }
+    // });
+
+
+    // --- Content Loading Function ---
+
     // Function to load content into the main area based on the module name
     function loadContent(moduleName) {
         console.log(`Attempting to load module: ${moduleName}`);
@@ -36,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <section class="module-section">
                          <h3>Latest Updates</h3>
                          <p>Stay tuned for new modules and features!</p>
-                         </section>
+                    </section>
                 `;
                 console.log('Home module content prepared.');
                 break;
@@ -66,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      <section class="module-section">
                          <h3>How Encryption Works (Simplified)</h3>
                          <p>Imagine scrambling a message so only your friend with a special decoder ring can read it. The scrambling is encryption, the decoder ring is the key.</p>
-                         </section>
+                     </section>
                     <button class="start-quiz" data-quiz="encryption">Start Encryption Quiz</button>
                 `;
                 console.log('Encryption module content prepared.');
@@ -91,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      <section class="module-section">
                          <h3>Common Compression Algorithms</h3>
                          <p>Learn about algorithms like Huffman Coding, Lempel-Ziv (LZ77, LZ78, LZW), and run-length encoding.</p>
-                         </section>
+                     </section>
                     <button class="start-quiz" data-quiz="compression">Start Compression Quiz</button>
                 `;
                 console.log('Compression module content prepared.');
@@ -140,16 +183,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h3>Student Dashboard</h3>
                         <p>This section would ideally show personalized progress, completed modules, and quiz scores.</p>
                         <p><em>Implementing a full profile and progress tracking system requires backend storage (like IndexedDB or a server-side database) and user authentication.</em></p>
-                        <h4>Completed Modules:</h4>
+                         <h4>Completed Modules:</h4>
                          <p>None yet.</p> <h4>Quiz Scores:</h4>
                          <p>No scores recorded.</p> </section>
                     <section class="module-section">
                         <h3>Account Settings</h3>
                         <p>Area for user settings (if applicable).</p>
-                         </section>
+                    </section>
                     `;
                 console.log('Profile module content prepared.');
-                // Note: Profile page typically doesn't have a quiz button directly
                 break;
 
             default:
@@ -179,27 +221,53 @@ document.addEventListener('DOMContentLoaded', () => {
          }
 
         // TODO: Add logic here to initialize other interactive elements within the loaded content
-        // For example, if a module has interactive diagrams or exercises, you would
-        // find those elements here and attach their event listeners.
     }
 
-    // Function to handle quiz button clicks (placeholder)
+    // Function to handle quiz button clicks
     function handleQuizButtonClick(event) {
         const quizType = event.target.getAttribute('data-quiz');
         console.log(`Quiz button clicked for: ${quizType}`);
+
         // ==============================================================
         // TODO: IMPLEMENT YOUR QUIZ MODAL DISPLAY AND QUIZ LOADING LOGIC HERE
         // This function should:
-        // 1. Prevent default button behavior if necessary (though not usually needed for simple buttons)
-        // 2. Get the quiz type from the button's data-quiz attribute.
-        // 3. Fetch or generate the questions for that quiz type.
-        // 4. Populate the #quiz-modal with the quiz content.
-        // 5. Display the #quiz-modal.
-        // 6. Add event listeners for quiz interactions (e.g., answer selection, submit).
+        // 1. Get the quiz type from the button's data-quiz attribute.
+        // 2. Fetch or generate the questions for that quiz type.
+        //    (You might store quiz data in modules.js or directly here)
+        // 3. Populate the #quiz-modal with the quiz content (questions, answer choices, submit button).
+        // 4. Display the #quiz-modal using showQuizModal().
+        // 5. Add event listeners for quiz interactions within the modal (e.g., answer selection, submit).
+        // 6. When the quiz is submitted, calculate the score and potentially save it (e.g., to IndexedDB).
+        // 7. Hide the modal when the quiz is finished or closed using hideQuizModal().
         // ==============================================================
-        alert(`Quiz feature for ${quizType} is not yet fully implemented.\n\nThis is where you would load and display the quiz questions.`); // Placeholder action
+
+        // Placeholder: Show the modal with a simple message for now
+        if (quizModal) {
+             const modalContentArea = quizModal.querySelector('.modal-content'); // Assuming you have a div with class 'modal-content' inside #quiz-modal
+             if (modalContentArea) {
+                 modalContentArea.innerHTML = `
+                     <h3>${quizType.charAt(0).toUpperCase() + quizType.slice(1)} Quiz (Coming Soon!)</h3>
+                     <p>This is where the quiz questions for ${quizType} will appear.</p>
+                     <p>You will select answers and submit the quiz here.</p>
+                     <button class="close-modal">Close</button>
+                 `;
+                  // Add listener to the close button inside the modal content
+                  const closeModalButton = modalContentArea.querySelector('.close-modal');
+                  if(closeModalButton) {
+                      closeModalButton.addEventListener('click', hideQuizModal);
+                  }
+                 showQuizModal(); // Show the modal
+             } else {
+                 console.error('Modal content area (.modal-content) not found inside #quiz-modal.');
+                 alert(`Quiz feature for ${quizType} is not yet fully implemented.\n\nCould not find modal content area.`); // Fallback alert
+             }
+        } else {
+             alert(`Quiz feature for ${quizType} is not yet fully implemented.\n\nQuiz modal element not found.`); // Fallback alert
+        }
     }
 
+
+    // --- Navigation Setup ---
 
     // Add event listeners to all navigation buttons in the header's nav
     const navButtons = document.querySelectorAll('header nav button');
@@ -230,48 +298,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==============================================================
-    // TODO: ADD LOGIC FOR MODALS HERE
+    // TODO: ADD LOGIC FOR AUTH MODAL HERE
     // This section would handle the display and interaction of your
-    // #auth-modal and #quiz-modal elements.
+    // #auth-modal element.
     //
     // Example:
     // const authModal = document.getElementById('auth-modal');
-    // const quizModal = document.getElementById('quiz-modal');
-    //
-    // Functions to open/close modals:
-    // function openModal(modalElement) { modalElement.style.display = 'block'; }
-    // function closeModal(modalElement) { modalElement.style.display = 'none'; }
-    //
-    // Add event listeners to open modals (e.g., a login button on the home page)
-    // Add event listeners to close modals (e.g., a close button or clicking outside the modal)
-    // Add event listeners for form submissions within modals (e.g., login/registration forms)
+    // function showAuthModal() { if (authModal) authModal.style.display = 'block'; }
+    // function hideAuthModal() { if (authModal) authModal.style.display = 'none'; }
+    // Add listeners for login/registration buttons, form submissions, etc.
     // ==============================================================
+
 
     console.log('main.js initialization complete.');
 });
 
 // NOTE ABOUT modules.js:
-// Based on your file structure, you might have intended modules.js to hold
-// the actual content or logic for each module. If so, you would modify this
-// main.js to import or access that content from modules.js instead of having
-// the HTML strings directly in the loadContent function.
-// For example, modules.js could export an object like:
-// export const modules = {
-//     encryption: { title: 'Encryption', html: '<p>Encryption content...</p>', quiz: [...] },
-//     compression: { title: 'Compression', html: '<p>Compression content...</p>', quiz: [...] },
-//     // etc.
+// You could define your quiz questions and answers in modules.js and import them here.
+// Example structure in modules.js:
+// export const quizzes = {
+//     encryption: [
+//         { question: "What is AES?", options: ["Algorithm", "Key", "Hash"], answer: "Algorithm" },
+//         // more questions...
+//     ],
+//     // other quizzes...
 // };
-// And then in main.js:
-// import { modules } from './modules.js';
-// function loadContent(moduleName) {
-//     const moduleData = modules[moduleName];
-//     if (moduleData) {
-//         contentArea.innerHTML = `<h2>${moduleData.title}</h2>${moduleData.html}`;
-//         // ... logic for quiz button if moduleData.quiz exists ...
-//     } else {
-//         // handle unknown module
-//     }
-// }
-// The current code keeps all content definition within main.js for simplicity,
-// assuming modules.js might be used for other purposes or is not yet structured
-// to hold module content this way.
+// Then in main.js, you would import: import { quizzes } from './modules.js';
+// And in handleQuizButtonClick, you would access: const quizQuestions = quizzes[quizType];
