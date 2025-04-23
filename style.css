@@ -26,8 +26,9 @@ header {
 
 header h1 {
     margin: 0;
-    font-size: 2em;
+    font-size: 1.8em; /* Slightly reduced font size for the longer title */
     flex-shrink: 0; /* Prevent title from shrinking */
+    min-width: 0; /* Allow title to shrink if necessary */
 }
 
 /* Navigation styling */
@@ -36,6 +37,8 @@ nav {
     display: flex; /* Use flexbox for nav buttons */
     flex-wrap: wrap; /* Allow buttons to wrap */
     justify-content: center; /* Center buttons when wrapped */
+    flex-grow: 1; /* Allow nav to take up available space */
+    margin-left: 20px; /* Add space between title and nav */
 }
 
 nav button {
@@ -48,6 +51,7 @@ nav button {
     padding: 8px 15px;
     border-radius: 5px;
     transition: background-color 0.3s ease, border-bottom 0.3s ease;
+    white-space: nowrap; /* Prevent button text from wrapping */
 }
 
 /* Style for navigation buttons on hover */
@@ -62,23 +66,7 @@ nav button.active {
     border-bottom: 3px solid #fff; /* Highlight with a bottom border */
 }
 
-/* Style for the Login/Register button */
-#login-button {
-    background-color: #ffc107; /* Yellow */
-    color: #212529; /* Dark text */
-    border: none;
-    padding: 8px 15px;
-    margin-left: 20px; /* Space from nav buttons */
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-    flex-shrink: 0; /* Prevent button from shrinking */
-}
-
-#login-button:hover {
-    background-color: #e0a800; /* Darker yellow */
-}
+/* Removed styles for the Login/Register button (#login-button) */
 
 
 /* Main content area styling */
@@ -154,7 +142,7 @@ footer {
 }
 
 
-/* --- Modal Styles --- */
+/* --- Modal Styles (Only for Quiz Modal now) --- */
 
 /* Basic Modal Styles */
 .modal {
@@ -345,6 +333,72 @@ footer {
     margin: 0 10px;
 }
 
+/* --- Profile Page Pseudoid Styles --- */
+#profile-input-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between items */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+#profile-input-section label {
+    font-weight: bold;
+}
+
+#profile-input-section input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1; /* Allow input to take up space */
+    max-width: 200px; /* Limit max width */
+}
+
+#profile-input-section button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+#profile-input-section button:hover {
+    background-color: #0056b3;
+}
+
+#current-pseudoid-display {
+    font-weight: bold;
+    margin-left: 10px;
+    color: #0056b3;
+}
+
+/* Style for displaying progress details */
+#completed-modules,
+#quiz-scores {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px dashed #eee;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+#quiz-scores p {
+    margin: 5px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #ddd;
+}
+
+#quiz-scores p:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
@@ -354,11 +408,9 @@ footer {
     }
     nav {
         margin-top: 10px;
-    }
-    #login-button {
         margin-left: 0; /* Remove left margin when stacked */
-        margin-top: 10px; /* Add top margin */
     }
+
 
     header h1 {
         font-size: 1.5em;
@@ -383,6 +435,22 @@ footer {
 
     .slideshow-container {
         padding: 15px;
+    }
+
+    #profile-input-section {
+        flex-direction: column; /* Stack items vertically on small screens */
+        align-items: stretch; /* Stretch items to fill container */
+    }
+
+    #profile-input-section input[type="text"] {
+        max-width: none; /* Remove max width when stacked */
+        width: 100%; /* Make input full width */
+    }
+
+    #current-pseudoid-display {
+        margin-left: 0; /* Remove left margin when stacked */
+        margin-top: 10px; /* Add space above */
+        text-align: center;
     }
 }
 
