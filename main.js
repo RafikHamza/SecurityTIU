@@ -194,7 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let score = 0;
         const totalQuestions = quizQuestions.length;
         const answers = {}; // To store user's selected answers
-
+        if (auth.isLoggedIn()) {
+            auth.saveQuizScore(moduleName, score, totalQuestions);
+            auth.saveProgress(moduleName, true); // Mark module as completed
+        }
         // Get selected answers
         quizQuestions.forEach((q, index) => {
             const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
@@ -326,3 +329,5 @@ document.addEventListener('DOMContentLoaded', () => {
 // a storage mechanism. IndexedDB is a browser-based database suitable
 // for client-side storage. For multi-device access or more robust
 // user management, a backend server and database would be necessary.
+
+
