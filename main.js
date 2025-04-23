@@ -564,3 +564,15 @@ function updateUI() {
         location.reload();
     });
 }
+
+function setupNavigation() {
+    const navButtons = document.querySelectorAll('nav button');
+    console.log("Buttons found:", navButtons);
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const module = button.getAttribute('data-module');
+            console.log("Loading module:", module);
+            loadModule(module);
+        });
+    });
+}
