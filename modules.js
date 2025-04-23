@@ -476,7 +476,7 @@ export const modules = {
             </section>
         `,
         // Add an init function specifically for the profile page
-        // This init function will now take the IndexedDB functions as arguments
+        // This init function will now take the IndexedDB functions and state getters as arguments
         init: function(contentElement, dbFunctions) {
              console.log('Initializing profile module...');
              const pseudoidInput = contentElement.querySelector('#pseudoid-input');
@@ -486,15 +486,15 @@ export const modules = {
              const completedModulesDiv = contentElement.querySelector('#completed-modules');
              const quizScoresDiv = contentElement.querySelector('#quiz-scores');
 
-             // Ensure dbFunctions are available
-             if (!dbFunctions || !dbFunctions.loadProgressFromDB || !dbFunctions.saveProgressToDB || !dbFunctions.setCurrentPseudoid || !dbFunctions.getCurrentPseudoid) {
-                 console.error('IndexedDB functions not provided to profile module init.');
-                 // Disable buttons or show error message if DB functions are missing
+             // Ensure dbFunctions and state getters are available
+             if (!dbFunctions || !dbFunctions.loadProgressFromDB || !dbFunctions.saveProgressToDB || !dbFunctions.setCurrentPseudoid || !dbFunctions.getCurrentPseudoid || !dbFunctions.getCurrentUserProgress) {
+                 console.error('Required functions not provided to profile module init.');
+                 // Disable buttons or show error message if functions are missing
                  if(loadButton) loadButton.disabled = true;
                  if(saveButton) saveButton.disabled = true;
-                 currentPseudoidDisplay.textContent = 'Error: Database functions missing.';
+                 currentPseudoidDisplay.textContent = 'Error: Required functions missing.';
                  currentPseudoidDisplay.style.color = 'red';
-                 return; // Stop initialization if DB functions are not available
+                 return; // Stop initialization if functions are not available
              }
 
              // Function to update the displayed pseudoid
@@ -557,13 +557,13 @@ export const modules = {
                          console.log('Loaded progress:', progress);
                          displayProgress(progress);
                          alert(`Progress loaded for Pseudoid: ${pseudoid}`);
-                         dbFunctions.setCurrentPseudoid(pseudoid); // Set the current pseudoid globally
+                         await dbFunctions.setCurrentPseudoid(pseudoid); // Set the current pseudoid globally and load progress into state
                          updatePseudoidDisplay(pseudoid);
                      } else {
                          alert(`No saved progress found for Pseudoid: ${pseudoid}. Starting new progress.`);
-                         // If no progress found, maybe initialize a new progress object?
+                         // If no progress found, initialize new progress for this pseudoid
                          displayProgress(null); // Clear displayed progress
-                         dbFunctions.setCurrentPseudoid(pseudoid); // Set the current pseudoid globally
+                         await dbFunctions.setCurrentPseudoid(pseudoid); // Set the current pseudoid globally and initialize new progress
                          updatePseudoidDisplay(pseudoid);
                      }
                  });
@@ -575,46 +575,23 @@ export const modules = {
                          alert('Please enter a Pseudoid to save progress.');
                          return;
                      }
-                     // Get the current progress data to save
-                     // This is a placeholder. In a real app, you'd get this from main.js state.
-                     // For now, we'll try to load existing progress and update it.
-                     const currentProgress = await dbFunctions.loadProgressFromDB(pseudoid) || { pseudoid: pseudoid, completedModules: [], quizScores: {} };
+                     // Get the current progress data from the main.js state
+                     const progressToSave = dbFunctions.getCurrentUserProgress();
 
-                     // TODO: Update currentProgress with actual completed modules and latest quiz scores
-                     // This requires coordination with main.js state.
-                     // For demonstration, we'll just save the currently displayed data (which might be outdated)
-                     // or use placeholders if the display isn't accurate.
-                     // A better approach: main.js holds the current progress object and passes it here or provides a getter.
-
-                     // Example: Assume main.js has a function like getOverallProgress()
-                     // const overallProgress = mainJs.getOverallProgress(); // This would require main.js to expose this.
-                     // const progressToSave = { ...overallProgress, pseudoid: pseudoid };
-
-                     // For now, let's just save the currently displayed items as a basic example
-                     // This is NOT robust as it only saves what's currently shown.
-                     const displayedCompleted = completedModulesDiv.textContent === 'No modules completed yet.' ? [] : completedModulesDiv.textContent.split(', ').map(item => item.trim());
-                      const displayedScores = {};
-                      quizScoresDiv.querySelectorAll('p').forEach(p => {
-                          const text = p.textContent;
-                          const match = text.match(/(.+):\s*(\d+)\/(\d+)/);
-                          if (match) {
-                              displayedScores[match[1].trim()] = { score: parseInt(match[2]), total: parseInt(match[3]) };
-                          }
-                      });
-
-                      const progressToSave = {
-                          pseudoid: pseudoid,
-                          completedModules: displayedCompleted,
-                          quizScores: displayedScores
-                      };
-                      console.warn('Saving potentially outdated progress data. Implement proper state management.');
+                     // Ensure the pseudoid in the progress object matches the input field
+                     // This handles cases where the user changes the pseudoid in the input
+                     // but hasn't clicked Load yet.
+                     progressToSave.pseudoid = pseudoid;
 
 
                      await dbFunctions.saveProgressToDB(pseudoid, progressToSave);
                      alert(`Progress saved for Pseudoid: ${pseudoid}`);
                      console.log('Saved progress:', progressToSave);
-                     dbFunctions.setCurrentPseudoid(pseudoid); // Ensure the pseudoid is set globally
+                     // After saving, update the global pseudoid in case it was changed in the input field
+                     await dbFunctions.setCurrentPseudoid(pseudoid);
                      updatePseudoidDisplay(pseudoid);
+                     // Refresh the displayed progress from the updated state
+                     displayProgress(dbFunctions.getCurrentUserProgress());
                  });
              }
 
