@@ -195,4 +195,55 @@ main {
         margin-bottom: 5px; /* Space between list items */
     }
 
+/* Basic Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px; /* Location of the box */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px; /* Max width for larger screens */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: relative; /* Needed for positioning close button if added */
+}
+
+/* Style for the close button inside the modal content */
+.modal-content .close-modal {
+    /* Basic button styling - you can customize this */
+    background-color: #dc3545; /* Red color */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    float: right; /* Position to the right */
+}
+
+.modal-content .close-modal:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Optional: Style for the other modal (#auth-modal) */
+#auth-modal .modal-content {
+     /* You can style the auth modal content differently if needed */
+     /* Inherits styles from .modal-content by default */
+}
+
+
     
