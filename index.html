@@ -20,13 +20,28 @@
     </header>
     <main id="content">
     </main>
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <h3>Login / Register</h3>
-            <p>Authentication form goes here.</p>
-            <button class="close-modal">Close</button>
-        </div>
+<!-- Update the auth-modal in index.html -->
+<div id="auth-modal" class="modal">
+    <div class="modal-content">
+        <h3 id="auth-title">Login</h3>
+        <div id="auth-message" class="message"></div>
+        <form id="auth-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" id="auth-submit">Login</button>
+        </form>
+        <p id="auth-switch">
+            Don't have an account? <a href="#" id="switch-form">Register</a>
+        </p>
+        <button class="close-modal">Close</button>
     </div>
+</div>
     <div id="quiz-modal" class="modal">
         <div class="modal-content">
             <button class="close-modal">Close</button>
