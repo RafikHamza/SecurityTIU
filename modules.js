@@ -29,53 +29,252 @@ export const modules = {
                  </section>
         `
     },
-    encryption: {
-        title: 'Encryption Module',
+    encryption: { // Renamed slightly for clarity vs the new lesson
+        title: 'Encryption Basics Module',
         html: `
-            <h2>Encryption Module</h2>
-            <p>Learn how to protect your data using various encryption techniques.</p>
+            <h2>Encryption Basics Module</h2>
+            <p>Learn the fundamental concepts of protecting your data.</p>
             <section class="module-section">
                 <h3>What is Encryption?</h3>
                 <p>Encryption is the process of converting data into a code to prevent unauthorized access. This is done using an algorithm and a key. Only someone with the correct key can decrypt the data back into its original form.</p>
             </section>
+             <section class="module-section">
+                 <h3>Why Encrypt?</h3>
+                 <p>Encryption ensures confidentiality, protecting sensitive information during storage and transmission.</p>
+             </section>
+             `,
+        // No quiz defined here, quiz is with the Symmetric/Asymmetric lesson
+    },
+    'encryption-types': { // New module key for the lesson
+        title: 'Symmetric and Asymmetric Encryption',
+        html: `
+            <h2>Symmetric and Asymmetric Encryption: A Comprehensive Lesson</h2>
+
             <section class="module-section">
-                <h3>Symmetric vs. Asymmetric Encryption</h3>
-                <p>Explore the difference between symmetric encryption (using the same key for encryption and decryption) and asymmetric encryption (using a pair of public and private keys).</p>
-                <h4>Symmetric Examples:</h4>
+                <h3>Learning Objectives</h3>
+                <p>By the end of this lesson, you will understand:</p>
                 <ul>
-                    <li>AES (Advanced Encryption Standard)</li>
-                    <li>DES (Data Encryption Standard - largely outdated)</li>
-                </ul>
-                 <h4>Asymmetric Examples:</h4>
-                <ul>
-                    <li>RSA (Rivest–Shamir–Adleman)</li>
-                    <li>ECC (Elliptic Curve Cryptography)</li>
+                    <li>The basic concepts of encryption and why it's important</li>
+                    <li>How symmetric encryption works, its advantages and limitations</li>
+                    <li>How asymmetric encryption works, its advantages and limitations</li>
+                    <li>Real-world applications of both encryption types</li>
+                    <li>How the two methods can work together in practical security systems</li>
                 </ul>
             </section>
+
+            <section class="module-section">
+                <h3>Introduction to Encryption</h3>
+                <p>Encryption is the process of converting information (plaintext) into an unreadable format (ciphertext) that can only be decoded by authorized parties. It's the foundation of data security and privacy in our digital world.</p>
+            </section>
+
+            <section class="module-section">
+                <h3>Symmetric Encryption</h3>
+                <h4>Concept</h4>
+                <p>Symmetric encryption uses the same key for both encryption and decryption. Think of it as a single physical key that both locks and unlocks a door.</p>
+                <h4>How It Works</h4>
+                <ol>
+                    <li>The sender encrypts the plaintext message using the secret key</li>
+                    <li>The encrypted message (ciphertext) is transmitted</li>
+                    <li>The receiver uses the same secret key to decrypt the ciphertext back to plaintext</li>
+                </ol>
+                <h4>Key Characteristics</h4>
+                <ul>
+                    <li><strong>Speed:</strong> Generally faster than asymmetric encryption</li>
+                    <li><strong>Efficiency:</strong> Works well for large amounts of data</li>
+                    <li><strong>Key Distribution Challenge:</strong> Both parties need to securely share the key</li>
+                    <li><strong>Key Management Issue:</strong> As the number of users increases, the number of keys needed grows rapidly (n&times;(n-1)/2 keys for n users)</li>
+                </ul>
+                <h4>Common Algorithms</h4>
+                <ul>
+                    <li>AES (Advanced Encryption Standard) - 128, 192, or 256-bit keys</li>
+                    <li>DES (Data Encryption Standard) - outdated, 56-bit keys</li>
+                    <li>3DES (Triple DES) - more secure version of DES</li>
+                    <li>ChaCha20 - used in modern protocols like TLS</li>
+                </ul>
+            </section>
+
+            <section class="module-section">
+                <h3>Asymmetric Encryption (Public Key Cryptography)</h3>
+                <h4>Concept</h4>
+                <p>Asymmetric encryption uses a pair of related keys - a public key and a private key. Data encrypted with one key can only be decrypted with its corresponding key.</p>
+                <h4>How It Works</h4>
+                 <ol>
+                    <li>Each user has a public key (shared openly) and a private key (kept secret)</li>
+                    <li>To send a secure message to someone, encrypt it using their public key</li>
+                    <li>Only the recipient can decrypt it using their matching private key</li>
+                </ol>
+                <h4>Key Characteristics</h4>
+                <ul>
+                    <li><strong>Different Keys:</strong> Uses mathematically related but different keys for encryption and decryption</li>
+                    <li><strong>Key Distribution Advantage:</strong> Public keys can be freely shared</li>
+                    <li><strong>Speed:</strong> Slower than symmetric encryption</li>
+                    <li><strong>Processing Power:</strong> Requires more computational resources</li>
+                    <li><strong>Security:</strong> Based on complex mathematical problems that are difficult to solve</li>
+                </ul>
+                <h4>Common Algorithms</h4>
+                <ul>
+                    <li>RSA (Rivest-Shamir-Adleman)</li>
+                    <li>ECC (Elliptic Curve Cryptography)</li>
+                    <li>Diffie-Hellman Key Exchange</li>
+                    <li>DSA (Digital Signature Algorithm)</li>
+                </ul>
+            </section>
+
+            <section class="module-section">
+                <h3>Comparing Symmetric vs. Asymmetric Encryption</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Symmetric</th>
+                            <th>Asymmetric</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Keys Used</td>
+                            <td>Single shared key</td>
+                            <td>Key pair (public &amp; private)</td>
+                        </tr>
+                        <tr>
+                            <td>Speed</td>
+                            <td>Faster</td>
+                            <td>Slower</td>
+                        </tr>
+                         <tr>
+                            <td>Security for large data</td>
+                            <td>Higher</td>
+                            <td>Lower</td>
+                        </tr>
+                        <tr>
+                            <td>Key Distribution</td>
+                            <td>Difficult</td>
+                            <td>Easier</td>
+                        </tr>
+                        <tr>
+                            <td>Key Length</td>
+                            <td>Shorter (128-256 bits)</td>
+                            <td>Longer (2048+ bits)</td>
+                        </tr>
+                        <tr>
+                            <td>Use Cases</td>
+                            <td>Bulk data encryption</td>
+                            <td>Key exchange, digital signatures</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="module-section">
+                <h3>Real-World Applications</h3>
+                <h4>Symmetric Encryption Applications</h4>
+                <ul>
+                    <li>File encryption</li>
+                    <li>Database encryption</li>
+                    <li>Hardware encryption</li>
+                    <li>Streaming data protection</li>
+                    <li>Session encryption in TLS/SSL</li>
+                </ul>
+                <h4>Asymmetric Encryption Applications</h4>
+                <ul>
+                    <li>Digital signatures</li>
+                    <li>SSL/TLS certificates</li>
+                    <li>Secure email (PGP/GPG)</li>
+                    <li>Cryptocurrency systems</li>
+                    <li>Secure key exchange</li>
+                </ul>
+            </section>
+
+            <section class="module-section">
+                <h3>Hybrid Systems: The Best of Both Worlds</h3>
+                <p>Most modern security systems use both encryption types together:</p>
+                <ol>
+                    <li>Asymmetric encryption is used to securely exchange a symmetric key</li>
+                    <li>Symmetric encryption is then used for the actual data exchange</li>
+                </ol>
+                <p>This approach leverages:</p>
+                <ul>
+                    <li>The security of asymmetric encryption for key exchange</li>
+                    <li>The speed and efficiency of symmetric encryption for data transmission</li>
+                </ul>
+                <p><strong>Example:</strong> HTTPS connections use this hybrid approach:</p>
+                 <ul>
+                    <li>RSA or ECC (asymmetric) handles the initial handshake</li>
+                    <li>AES (symmetric) encrypts the actual web traffic</li>
+                </ul>
+            </section>
+
+            <section class="module-section">
+                <h3>Practical Examples</h3>
+                 <h4>Symmetric Encryption Example</h4>
+                <p>If Alice and Bob want to communicate using AES-256:</p>
+                <ol>
+                    <li>They must first agree on a secret key (256 bits)</li>
+                    <li>Alice encrypts "Hello Bob" using this key &rarr; "x7#Rq!@pL"</li>
+                    <li>Alice sends "x7#Rq!@pL" to Bob</li>
+                    <li>Bob decrypts "x7#Rq!@pL" using the same key &rarr; "Hello Bob"</li>
+                </ol>
+                <p>But how do they securely share this key in the first place? That's where asymmetric encryption helps.</p>
+
+                <h4>Asymmetric Encryption Example</h4>
+                <ol>
+                    <li>Bob generates a key pair: public key (PB) and private key (SB)</li>
+                    <li>Bob shares PB publicly, keeps SB secret</li>
+                    <li>Alice uses PB to encrypt "Hello Bob" &rarr; "k9$mZ@3xT"</li>
+                    <li>Alice sends "k9$mZ@3xT" to Bob</li>
+                    <li>Only Bob can decrypt it using SB &rarr; "Hello Bob"</li>
+                </ol>
+            </section>
+
              <section class="module-section">
-                 <h3>How Encryption Works (Simplified)</h3>
-                 <p>Imagine scrambling a message so only your friend with a special decoder ring can read it. The scrambling is encryption, the decoder ring is the key.</p>
-                 </section>
-             <button class="start-quiz" data-quiz="encryption">Start Encryption Quiz</button>
-        `,
-        // Define quiz questions for the encryption module
+                <h3>Conclusion</h3>
+                <p>Both symmetric and asymmetric encryption play crucial roles in modern security:</p>
+                <ul>
+                    <li>Symmetric encryption offers speed and efficiency but presents key distribution challenges</li>
+                    <li>Asymmetric encryption solves key distribution but is slower and more resource-intensive</li>
+                </ul>
+                <p>Together, they form comprehensive security systems that protect our digital world.</p>
+                <p>Remember that encryption is only as strong as its implementation and key management practices. Even the most sophisticated algorithms can be compromised by poor security practices.</p>
+            </section>
+
+             <section class="module-section">
+                <h3>Assessment Ideas</h3>
+                <ul>
+                    <li>Compare the key distribution problem in symmetric vs. asymmetric encryption</li>
+                    <li>Describe a real-world scenario where both encryption types would be used together</li>
+                    <li>Explain why asymmetric encryption alone isn't typically used for large file encryption</li>
+                </ul>
+            </section>
+
+             <button class="start-quiz" data-quiz="encryption-types">Start Encryption Types Quiz</button> `,
+        // Define quiz questions for this specific lesson
         quiz: [
             {
-                question: "What is the primary purpose of encryption?",
-                options: ["To reduce file size", "To verify data integrity", "To secure data from unauthorized access", "To convert data to a different format"],
-                answer: "To secure data from unauthorized access"
-            },
-            {
                 question: "Which type of encryption uses the same key for both encryption and decryption?",
-                options: ["Symmetric", "Asymmetric", "Hashing", "Compression"],
+                options: ["Symmetric", "Asymmetric", "Hashing", "Hybrid"],
                 answer: "Symmetric"
             },
             {
-                question: "RSA is an example of which type of encryption?",
-                options: ["Symmetric", "Asymmetric", "Lossless", "Lossy"],
-                answer: "Asymmetric"
+                question: "What is the main advantage of asymmetric encryption over symmetric encryption?",
+                options: ["It's faster for bulk data", "It solves the key distribution problem", "It uses shorter keys", "It doesn't require algorithms"],
+                answer: "It solves the key distribution problem"
+            },
+            {
+                question: "In a hybrid encryption system (like HTTPS), what is asymmetric encryption typically used for?",
+                options: ["Encrypting the entire data stream", "Hashing passwords", "Securely exchanging a symmetric key", "Compressing data"],
+                answer: "Securely exchanging a symmetric key"
+            },
+            {
+                question: "Which of these is a common symmetric encryption algorithm?",
+                options: ["RSA", "ECC", "AES", "SHA-256"],
+                answer: "AES"
+            },
+             {
+                question: "Which of these is a common asymmetric encryption algorithm?",
+                options: ["AES", "DES", "RSA", "ChaCha20"],
+                answer: "RSA"
             }
-            // Add more encryption quiz questions here
+            // Add more quiz questions relevant to the Symmetric/Asymmetric lesson here
         ]
     },
     compression: {
@@ -192,7 +391,16 @@ export const modules = {
                  </section>
         `
         // Profile page typically doesn't have a quiz directly
-    }
+    },
+     // Optional: Add a 'notfound' module
+     notfound: {
+         title: 'Module Not Found',
+         html: `
+             <h2>Module Not Found</h2>
+             <p>The requested learning module could not be loaded.</p>
+             <p>Please use the navigation bar to select a valid module.</p>
+         `
+     }
 };
 
 // You could add other data or functions here if needed by modules.js
