@@ -346,3 +346,108 @@ footer {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+/* Profile page specific styles */
+.progress-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.module-card {
+    padding: 15px;
+    border-radius: 8px;
+    background: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #ddd;
+}
+
+.module-card.completed {
+    background: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.module-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #999;
+}
+
+.module-card.completed .module-icon {
+    color: #28a745;
+}
+
+.module-title {
+    font-weight: bold;
+}
+
+/* Quiz result bars */
+.quiz-results {
+    margin: 20px 0;
+}
+
+.score-item {
+    margin-bottom: 15px;
+}
+
+.score-label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.score-bar-container {
+    height: 25px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.score-bar {
+    height: 100%;
+    transition: width 1s ease-in-out;
+}
+
+.score-bar.excellent {
+    background-color: #28a745;
+}
+
+.score-bar.good {
+    background-color: #17a2b8;
+}
+
+.score-bar.average {
+    background-color: #ffc107;
+}
+
+.score-bar.poor {
+    background-color: #dc3545;
+}
+
+.score-text {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    line-height: 25px;
+    color: white;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+/* Logout button */
+#logout-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#logout-button:hover {
+    background-color: #c82333;
+}
