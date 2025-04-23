@@ -17,16 +17,25 @@ header {
     padding: 10px 0;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex; /* Use flexbox for header layout */
+    justify-content: space-between; /* Space out title and nav */
+    align-items: center; /* Vertically align items */
+    padding: 10px 20px; /* Add horizontal padding */
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
 }
 
 header h1 {
     margin: 0;
     font-size: 2em;
+    flex-shrink: 0; /* Prevent title from shrinking */
 }
 
 /* Navigation styling */
 nav {
-    margin-top: 10px;
+    margin-top: 0; /* Reset top margin */
+    display: flex; /* Use flexbox for nav buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center; /* Center buttons when wrapped */
 }
 
 nav button {
@@ -34,7 +43,7 @@ nav button {
     border: none;
     color: #fff;
     font-size: 1em;
-    margin: 0 10px;
+    margin: 5px 10px; /* Adjust margin for flexbox */
     cursor: pointer;
     padding: 8px 15px;
     border-radius: 5px;
@@ -51,6 +60,24 @@ nav button.active {
     background-color: #0056b3; /* Darker blue */
     font-weight: bold;
     border-bottom: 3px solid #fff; /* Highlight with a bottom border */
+}
+
+/* Style for the Login/Register button */
+#login-button {
+    background-color: #ffc107; /* Yellow */
+    color: #212529; /* Dark text */
+    border: none;
+    padding: 8px 15px;
+    margin-left: 20px; /* Space from nav buttons */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+#login-button:hover {
+    background-color: #e0a800; /* Darker yellow */
 }
 
 
@@ -255,9 +282,84 @@ footer {
     background-color: #e0a800; /* Darker yellow on hover */
 }
 
+/* --- Slideshow Styles --- */
+.slideshow-container {
+    position: relative;
+    max-width: 800px; /* Adjust as needed */
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#slides {
+    position: relative; /* Needed for absolute positioning of slides */
+     min-height: 300px; /* Ensure container has some height */
+     overflow: hidden; /* Hide non-active slides */
+}
+
+.slide {
+    display: none; /* Hide all slides by default */
+    animation: fadeEffect 1s; /* Add a fade effect */
+}
+
+.slide.active {
+    display: block; /* Show the active slide */
+}
+
+/* Fade animation */
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+
+.slide-navigation {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.slide-navigation button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.slide-navigation button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.slide-navigation button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#slide-counter {
+    font-weight: bold;
+    margin: 0 10px;
+}
+
 
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
+    header {
+        flex-direction: column; /* Stack items vertically */
+        padding: 10px;
+    }
+    nav {
+        margin-top: 10px;
+    }
+    #login-button {
+        margin-left: 0; /* Remove left margin when stacked */
+        margin-top: 10px; /* Add top margin */
+    }
+
     header h1 {
         font-size: 1.5em;
     }
@@ -278,6 +380,10 @@ footer {
         margin: 10% auto;
         padding: 20px;
     }
+
+    .slideshow-container {
+        padding: 15px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -296,158 +402,13 @@ footer {
          margin: 5% auto;
          padding: 15px;
     }
-}
 
-/* Slideshow styles */
-.slideshow-container {
-    position: relative;
-    width: 100%;
-    margin: 0 auto;
-}
+     .slideshow-container {
+        padding: 10px;
+    }
 
-.slide-navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-}
-
-.slide-navigation button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.slide-navigation button:hover:not(:disabled) {
-    background-color: #0056b3;
-}
-
-.slide-navigation button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-.slide {
-    display: none;
-}
-
-.slide.active {
-    display: block;
-    animation: fadeIn 0.5s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-/* Profile page specific styles */
-.progress-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.module-card {
-    padding: 15px;
-    border-radius: 8px;
-    background: #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: all 0.3s ease;
-    border: 1px solid #ddd;
-}
-
-.module-card.completed {
-    background: #d4edda;
-    border-color: #c3e6cb;
-}
-
-.module-icon {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #999;
-}
-
-.module-card.completed .module-icon {
-    color: #28a745;
-}
-
-.module-title {
-    font-weight: bold;
-}
-
-/* Quiz result bars */
-.quiz-results {
-    margin: 20px 0;
-}
-
-.score-item {
-    margin-bottom: 15px;
-}
-
-.score-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.score-bar-container {
-    height: 25px;
-    background: #f0f0f0;
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-}
-
-.score-bar {
-    height: 100%;
-    transition: width 1s ease-in-out;
-}
-
-.score-bar.excellent {
-    background-color: #28a745;
-}
-
-.score-bar.good {
-    background-color: #17a2b8;
-}
-
-.score-bar.average {
-    background-color: #ffc107;
-}
-
-.score-bar.poor {
-    background-color: #dc3545;
-}
-
-.score-text {
-    position: absolute;
-    top: 0;
-    left: 10px;
-    line-height: 25px;
-    color: white;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
-}
-
-/* Logout button */
-#logout-button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#logout-button:hover {
-    background-color: #c82333;
+    .slide-navigation button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
 }
