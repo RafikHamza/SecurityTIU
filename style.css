@@ -1,249 +1,299 @@
-/* Base styles and layout */
-:root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --dark-color: #2c3e50;
-    --light-color: #ecf0f1;
-    --warning-color: #e74c3c;
-    --success-color: #27ae60;
-}
+/* style.css */
 
+/* Basic body styling */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: sans-serif;
     line-height: 1.6;
-    color: var(--dark-color);
-    background-color: var(--light-color);
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
-/* Header and navigation */
+/* Header styling */
 header {
-    background-color: var(--dark-color);
-    color: white;
-    padding: 1rem;
+    background: #007bff;
+    color: #fff;
+    padding: 10px 0;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+/* Navigation styling */
+nav {
+    margin-top: 10px;
 }
 
 nav button {
-    margin: 0.5rem;
-    padding: 0.5rem 1rem;
+    background: none;
     border: none;
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 4px;
+    color: #fff;
+    font-size: 1em;
+    margin: 0 10px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-bottom 0.3s ease;
 }
 
-/* Content area styling */
-main {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+/* Style for navigation buttons on hover */
+nav button:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly transparent white */
 }
 
-/* Module styling */
-.module-section {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    border-left: 4px solid var(--primary-color);
-    background-color: rgba(52, 152, 219, 0.1);
-}
-
-/* Interactive elements */
-.interactive-demo {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: 4px;
-}
-
-/* Quiz styling */
-.quiz-container {
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
-.quiz-question {
+/* Style for the active navigation button */
+nav button.active {
+    background-color: #0056b3; /* Darker blue */
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    border-bottom: 3px solid #fff; /* Highlight with a bottom border */
 }
 
-.quiz-option {
-    display: block;
-    margin: 0.5rem 0;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
 
-.quiz-option:hover {
-    background-color: #e9ecef;
-}
-
-.quiz-option.selected {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-/* Modal styling */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
-    z-index: 100;
-}
-
-.modal-content {
-    background-color: white;
-    margin: 10vh auto;
-    padding: 2rem;
-    width: 80%;
-    max-width: 600px;
+/* Main content area styling */
+main {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border-radius: 8px;
 }
 
-/* Progress indicators */
-.progress-bar {
-    height: 20px;
-    background-color: #ddd;
-    border-radius: 10px;
-    margin: 1rem 0;
-    overflow: hidden;
+main h2 {
+    color: #007bff;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.progress-fill {
-    height: 100%;
-    background-color: var(--success-color);
-    transition: width 0.3s ease;
+/* Add some spacing and styling to sections within modules */
+.module-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f9f9f9; /* Light background for sections */
+    border-radius: 8px; /* Rounded corners */
+    border: 1px solid #eee; /* Subtle border */
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    nav button {
-        display: block;
-        width: 100%;
-        margin: 0.25rem 0;
-    }
+.module-section h3 {
+    color: #333; /* Darker color for section headings */
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 5px;
 }
 
-    /* Add some spacing to sections within modules */
-    .module-section {
-        margin-bottom: 20px;
-        padding: 15px;
-        background-color: #f9f9f9; /* Light background for sections */
-        border-radius: 8px; /* Rounded corners */
-        border: 1px solid #eee; /* Subtle border */
-    }
+.module-section ul {
+    list-style: disc inside; /* Disc bullets inside the list */
+    margin-left: 20px; /* Indent the list */
+    padding-left: 0;
+}
 
-    .module-section h3 {
-        color: #333; /* Darker color for section headings */
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
+.module-section li {
+    margin-bottom: 8px; /* Space between list items */
+}
 
-    /* Style for the "Start Quiz" button */
-    .start-quiz {
-        display: inline-block; /* Make it behave like a block but allow other elements next to it */
-        background-color: #007bff; /* Primary blue color */
-        color: white; /* White text */
-        padding: 10px 20px; /* Padding inside the button */
-        border: none; /* No border */
-        border-radius: 5px; /* Rounded corners */
-        cursor: pointer; /* Indicate it's clickable */
-        font-size: 1em; /* Standard font size */
-        margin-top: 20px; /* Space above the button */
-        transition: background-color 0.3s ease; /* Smooth hover effect */
-    }
+/* Style for the "Start Quiz" button */
+.start-quiz {
+    display: inline-block;
+    background-color: #28a745; /* Green color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
 
-    .start-quiz:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-    }
+.start-quiz:hover {
+    background-color: #218838; /* Darker green on hover */
+}
 
-    /* Style for the active navigation button */
-    header nav button.active {
-        background-color: #0056b3; /* Darker blue */
-        color: white; /* White text */
-        font-weight: bold; /* Make the text bold */
-        border-bottom: 3px solid #007bff; /* Highlight with a bottom border */
-    }
 
-    /* Optional: Improve general button hover effect if not already present */
-    header nav button:hover {
-         background-color: #e2e6ea; /* Light grey background on hover */
-    }
+/* Footer styling */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+    color: #777;
+    font-size: 0.9em;
+}
 
-    /* Optional: Style for lists within sections */
-    .module-section ul {
-        list-style: disc inside; /* Disc bullets inside the list */
-        margin-left: 20px; /* Indent the list */
-    }
 
-    .module-section li {
-        margin-bottom: 5px; /* Space between list items */
-    }
+/* --- Modal Styles --- */
 
 /* Basic Modal Styles */
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 1000; /* Sit on top, higher than other content */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.6); /* Black w/ more opacity */
     padding-top: 60px; /* Location of the box */
 }
 
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 5% auto; /* 15% from the top and centered */
-    padding: 20px;
+    margin: 5% auto; /* 5% from the top and centered */
+    padding: 30px; /* Increased padding */
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 90%; /* Responsive width */
     max-width: 600px; /* Max width for larger screens */
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* More pronounced shadow */
     position: relative; /* Needed for positioning close button if added */
 }
 
 /* Style for the close button inside the modal content */
+/* This assumes a button with class 'close-modal' */
 .modal-content .close-modal {
-    /* Basic button styling - you can customize this */
-    background-color: #dc3545; /* Red color */
+    background-color: #6c757d; /* Grey color */
     color: white;
     padding: 8px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 15px;
-    float: right; /* Position to the right */
+    transition: background-color 0.3s ease;
 }
 
 .modal-content .close-modal:hover {
-    background-color: #c82333; /* Darker red on hover */
+    background-color: #5a6268; /* Darker grey on hover */
 }
 
-/* Optional: Style for the other modal (#auth-modal) */
-#auth-modal .modal-content {
-     /* You can style the auth modal content differently if needed */
-     /* Inherits styles from .modal-content by default */
+/* --- Quiz Specific Styles (within modal) --- */
+.quiz-question {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.quiz-question p {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.quiz-options label {
+    display: block; /* Each option on a new line */
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.quiz-options input[type="radio"] {
+    margin-right: 8px;
+}
+
+/* Style for the quiz submit button */
+.submit-quiz {
+     display: inline-block;
+     background-color: #007bff; /* Blue color */
+     color: white;
+     padding: 10px 20px;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     font-size: 1em;
+     margin-top: 20px;
+     transition: background-color 0.3s ease;
+}
+
+.submit-quiz:hover {
+     background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Styles for quiz review */
+.quiz-review {
+    margin-top: 15px;
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+.quiz-review p {
+    margin-bottom: 5px;
+    font-weight: normal; /* Reset bold from question */
+}
+
+.quiz-review .correct-answer {
+    color: #28a745; /* Green */
+    font-weight: bold;
+}
+
+.quiz-review .incorrect-answer {
+    color: #dc3545; /* Red */
+    font-weight: bold;
+}
+
+/* Style for retry quiz button */
+.retry-quiz {
+     display: inline-block;
+     background-color: #ffc107; /* Yellow color */
+     color: #212529; /* Dark text */
+     padding: 10px 20px;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     font-size: 1em;
+     margin-top: 20px;
+     transition: background-color 0.3s ease;
+}
+
+.retry-quiz:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
 }
 
 
-    
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    nav button {
+        margin: 5px;
+        padding: 6px 10px;
+        font-size: 0.9em;
+    }
+
+    main {
+        padding: 15px;
+        margin: 15px auto;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    nav button {
+        display: block; /* Stack buttons on very small screens */
+        margin: 5px auto;
+        width: 80%; /* Make buttons wider */
+    }
+
+    main {
+        padding: 10px;
+        margin: 10px auto;
+    }
+
+    .modal-content {
+         margin: 5% auto;
+         padding: 15px;
+    }
+}
