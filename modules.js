@@ -45,277 +45,308 @@ export const modules = {
              `,
         // No quiz defined here, quiz is with the Symmetric/Asymmetric lesson
     },
-// Update the encryption-types module in modules.js
-    'encryption-types': {
-    title: 'Symmetric and Asymmetric Encryption',
-    html: `
-        <h2>Symmetric and Asymmetric Encryption: A Comprehensive Lesson</h2>
-        
-        <div class="slideshow-container">
-            <div class="slide-navigation">
-                <button id="prev-slide" disabled>&lt; Previous</button>
-                <span id="slide-counter">Slide 1 of 8</span>
-                <button id="next-slide">Next &gt;</button>
+    'encryption-types': { // New module key for the lesson
+        title: 'Symmetric and Asymmetric Encryption',
+        html: `
+            <h2>Symmetric and Asymmetric Encryption: A Comprehensive Lesson</h2>
+
+            <div class="slideshow-container">
+                <div id="slides">
+                    <div class="slide active">
+                        <section class="module-section">
+                            <h3>Learning Objectives</h3>
+                            <p>By the end of this lesson, you will understand:</p>
+                            <ul>
+                                <li>The basic concepts of encryption and why it's important</li>
+                                <li>How symmetric encryption works, its advantages and limitations</li>
+                                <li>How asymmetric encryption works, its advantages and limitations</li>
+                                <li>Real-world applications of both encryption types</li>
+                                <li>How the two methods can work together in practical security systems</li>
+                            </ul>
+                        </section>
+                        <section class="module-section">
+                            <h3>Introduction to Encryption</h3>
+                            <p>Encryption is the process of converting information (plaintext) into an unreadable format (ciphertext) that can only be decoded by authorized parties. It's the foundation of data security and privacy in our digital world.</p>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h3>Symmetric Encryption</h3>
+                            <h4>Concept</h4>
+                            <p>Symmetric encryption uses the same key for both encryption and decryption. Think of it as a single physical key that both locks and unlocks a door.</p>
+                            <h4>How It Works</h4>
+                            <ol>
+                                <li>The sender encrypts the plaintext message using the secret key</li>
+                                <li>The encrypted message (ciphertext) is transmitted</li>
+                                <li>The receiver uses the same secret key to decrypt the ciphertext back to plaintext</li>
+                            </ol>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h4>Key Characteristics of Symmetric Encryption</h4>
+                            <ul>
+                                <li><strong>Speed:</strong> Generally faster than asymmetric encryption</li>
+                                <li><strong>Efficiency:</strong> Works well for large amounts of data</li>
+                                <li><strong>Key Distribution Challenge:</strong> Both parties need to securely share the key</li>
+                                <li><strong>Key Management Issue:</strong> As the number of users increases, the number of keys needed grows rapidly (n&times;(n-1)/2 keys for n users)</li>
+                            </ul>
+                        </section>
+                        <section class="module-section">
+                            <h4>Common Algorithms</h4>
+                            <ul>
+                                <li>AES (Advanced Encryption Standard) - 128, 192, or 256-bit keys</li>
+                                <li>DES (Data Encryption Standard) - outdated, 56-bit keys</li>
+                                <li>3DES (Triple DES) - more secure version of DES</li>
+                                <li>ChaCha20 - used in modern protocols like TLS</li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h3>Asymmetric Encryption (Public Key Cryptography)</h3>
+                            <h4>Concept</h4>
+                            <p>Asymmetric encryption uses a pair of related keys - a public key and a private key. Data encrypted with one key can only be decrypted with its corresponding key.</p>
+                            <h4>How It Works</h4>
+                             <ol>
+                                <li>Each user has a public key (shared openly) and a private key (kept secret)</li>
+                                <li>To send a secure message to someone, encrypt it using their public key</li>
+                                <li>Only the recipient can decrypt it using their matching private key</li>
+                            </ol>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h4>Key Characteristics of Asymmetric Encryption</h4>
+                            <ul>
+                                <li><strong>Different Keys:</strong> Uses mathematically related but different keys for encryption and decryption</li>
+                                <li><strong>Key Distribution Advantage:</strong> Public keys can be freely shared</li>
+                                <li><strong>Speed:</strong> Slower than symmetric encryption</li>
+                                <li><strong>Processing Power:</strong> Requires more computational resources</li>
+                                <li><strong>Security:</strong> Based on complex mathematical problems that are difficult to solve</li>
+                            </ul>
+                        </section>
+                        <section class="module-section">
+                            <h4>Common Algorithms</h4>
+                            <ul>
+                                <li>RSA (Rivest-Shamir-Adleman)</li>
+                                <li>ECC (Elliptic Curve Cryptography)</li>
+                                <li>Diffie-Hellman Key Exchange</li>
+                                <li>DSA (Digital Signature Algorithm)</li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h3>Comparing Symmetric vs. Asymmetric Encryption</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Symmetric</th>
+                                        <th>Asymmetric</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Keys Used</td>
+                                        <td>Single shared key</td>
+                                        <td>Key pair (public &amp; private)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Speed</td>
+                                        <td>Faster</td>
+                                        <td>Slower</td>
+                                    </tr>
+                                     <tr>
+                                        <td>Security for large data</td>
+                                        <td>Higher</td>
+                                        <td>Lower</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Key Distribution</td>
+                                        <td>Difficult</td>
+                                        <td>Easier</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Key Length</td>
+                                        <td>Shorter (128-256 bits)</td>
+                                        <td>Longer (2048+ bits)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Use Cases</td>
+                                        <td>Bulk data encryption</td>
+                                        <td>Key exchange, digital signatures</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h3>Real-World Applications & Hybrid Systems</h3>
+                            <h4>Symmetric Encryption Applications</h4>
+                            <ul>
+                                <li>File encryption</li>
+                                <li>Database encryption</li>
+                                <li>Hardware encryption</li>
+                                <li>Streaming data protection</li>
+                                <li>Session encryption in TLS/SSL</li>
+                            </ul>
+                            <h4>Asymmetric Encryption Applications</h4>
+                            <ul>
+                                <li>Digital signatures</li>
+                                <li>SSL/TLS certificates</li>
+                                <li>Secure email (PGP/GPG)</li>
+                                <li>Cryptocurrency systems</li>
+                                <li>Secure key exchange</li>
+                            </ul>
+                        </section>
+                         <section class="module-section">
+                            <h4>Hybrid Systems: The Best of Both Worlds</h4>
+                            <p>Most modern security systems use both encryption types together:</p>
+                            <ol>
+                                <li>Asymmetric encryption is used to securely exchange a symmetric key</li>
+                                <li>Symmetric encryption is then used for the actual data exchange</li>
+                            </ol>
+                            <p>This approach leverages:</p>
+                            <ul>
+                                <li>The security of asymmetric encryption for key exchange</li>
+                                <li>The speed and efficiency of symmetric encryption for data transmission</li>
+                            </ul>
+                            <p><strong>Example:</strong> HTTPS connections use this hybrid approach:</p>
+                             <ul>
+                                <li>RSA or ECC (asymmetric) handles the initial handshake</li>
+                                <li>AES (symmetric) encrypts the actual web traffic</li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <div class="slide">
+                        <section class="module-section">
+                            <h3>Practical Examples & Conclusion</h3>
+                             <h4>HTTPS Connection Example</h4>
+                            <ol>
+                                <li>Your browser gets the website's public key (from its SSL certificate)</li>
+                                <li>Browser generates a random symmetric key</li>
+                                <li>Browser encrypts this symmetric key using the website's public key</li>
+                                <li>Website decrypts it using its private key</li>
+                                <li>Both sides now have the same symmetric key to encrypt all further communications</li>
+                            </ol>
+                        </section>
+                         <section class="module-section">
+                            <h3>Conclusion</h3>
+                            <p>Both symmetric and asymmetric encryption play crucial roles in modern security:</p>
+                            <ul>
+                                <li>Symmetric encryption offers speed and efficiency but presents key distribution challenges</li>
+                                <li>Asymmetric encryption solves key distribution but is slower and more resource-intensive</li>
+                            </ul>
+                            <p>Together, they form comprehensive security systems that protect our digital world.</p>
+                            <p>Remember that encryption is only as strong as its implementation and key management practices. Even the most sophisticated algorithms can be compromised by poor security practices.</p>
+                        </section>
+                         <section class="module-section">
+                            <h3>Assessment Ideas</h3>
+                            <ul>
+                                <li>Compare the key distribution problem in symmetric vs. asymmetric encryption</li>
+                                <li>Describe a real-world scenario where both encryption types would be used together</li>
+                                <li>Explain why asymmetric encryption alone isn't typically used for large file encryption</li>
+                            </ul>
+                        </section>
+                        <button class="start-quiz" data-quiz="encryption-types">Start Encryption Types Quiz</button> </div>
+                </div>
+                 <div class="slide-navigation">
+                    <button id="prev-slide">&lt; Previous</button>
+                    <span id="slide-counter"></span> <button id="next-slide">Next &gt;</button>
+                </div>
             </div>
-            
-            <div id="slides">
-                <!-- Slide 1 -->
-                <div class="slide active">
-                    <section class="module-section">
-                        <h3>Learning Objectives</h3>
-                        <p>By the end of this lesson, you will understand:</p>
-                        <ul>
-                            <li>The basic concepts of encryption and why it's important</li>
-                            <li>How symmetric encryption works, its advantages and limitations</li>
-                            <li>How asymmetric encryption works, its advantages and limitations</li>
-                            <li>Real-world applications of both encryption types</li>
-                            <li>How the two methods can work together in practical security systems</li>
-                        </ul>
-                    </section>
-                    <section class="module-section">
-                        <h3>Introduction to Encryption</h3>
-                        <p>Encryption is the process of converting information (plaintext) into an unreadable format (ciphertext) that can only be decoded by authorized parties. It's the foundation of data security and privacy in our digital world.</p>
-                    </section>
-                </div>
-                
-                <!-- Slide 2 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h3>Symmetric Encryption</h3>
-                        <h4>Concept</h4>
-                        <p>Symmetric encryption uses the same key for both encryption and decryption. Think of it as a single physical key that both locks and unlocks a door.</p>
-                        <h4>How It Works</h4>
-                        <ol>
-                            <li>The sender encrypts the plaintext message using the secret key</li>
-                            <li>The encrypted message (ciphertext) is transmitted</li>
-                            <li>The receiver uses the same secret key to decrypt the ciphertext back to plaintext</li>
-                        </ol>
-                    </section>
-                </div>
-                
-                <!-- Slide 3 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h4>Key Characteristics of Symmetric Encryption</h4>
-                        <ul>
-                            <li><strong>Speed:</strong> Generally faster than asymmetric encryption</li>
-                            <li><strong>Efficiency:</strong> Works well for large amounts of data</li>
-                            <li><strong>Key Distribution Challenge:</strong> Both parties need to securely share the key</li>
-                            <li><strong>Key Management Issue:</strong> As the number of users increases, the number of keys needed grows rapidly (n&times;(n-1)/2 keys for n users)</li>
-                        </ul>
-                        <h4>Common Algorithms</h4>
-                        <ul>
-                            <li>AES (Advanced Encryption Standard) - 128, 192, or 256-bit keys</li>
-                            <li>DES (Data Encryption Standard) - outdated, 56-bit keys</li>
-                            <li>3DES (Triple DES) - more secure version of DES</li>
-                            <li>ChaCha20 - used in modern protocols like TLS</li>
-                        </ul>
-                    </section>
-                </div>
-                
-                <!-- Slide 4 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h3>Asymmetric Encryption (Public Key Cryptography)</h3>
-                        <h4>Concept</h4>
-                        <p>Asymmetric encryption uses a pair of related keys - a public key and a private key. Data encrypted with one key can only be decrypted with its corresponding key.</p>
-                        <h4>How It Works</h4>
-                        <ol>
-                            <li>Each user has a public key (shared openly) and a private key (kept secret)</li>
-                            <li>To send a secure message to someone, encrypt it using their public key</li>
-                            <li>Only the recipient can decrypt it using their matching private key</li>
-                        </ol>
-                    </section>
-                </div>
-                
-                <!-- Slide 5 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h4>Key Characteristics of Asymmetric Encryption</h4>
-                        <ul>
-                            <li><strong>Different Keys:</strong> Uses mathematically related but different keys for encryption and decryption</li>
-                            <li><strong>Key Distribution Advantage:</strong> Public keys can be freely shared</li>
-                            <li><strong>Speed:</strong> Slower than symmetric encryption</li>
-                            <li><strong>Processing Power:</strong> Requires more computational resources</li>
-                            <li><strong>Security:</strong> Based on complex mathematical problems that are difficult to solve</li>
-                        </ul>
-                        <h4>Common Algorithms</h4>
-                        <ul>
-                            <li>RSA (Rivest-Shamir-Adleman)</li>
-                            <li>ECC (Elliptic Curve Cryptography)</li>
-                            <li>Diffie-Hellman Key Exchange</li>
-                            <li>DSA (Digital Signature Algorithm)</li>
-                        </ul>
-                    </section>
-                </div>
-                
-                <!-- Slide 6 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h3>Comparing Symmetric vs. Asymmetric Encryption</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Feature</th>
-                                    <th>Symmetric</th>
-                                    <th>Asymmetric</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Keys Used</td>
-                                    <td>Single shared key</td>
-                                    <td>Key pair (public &amp; private)</td>
-                                </tr>
-                                <tr>
-                                    <td>Speed</td>
-                                    <td>Faster</td>
-                                    <td>Slower</td>
-                                </tr>
-                                <tr>
-                                    <td>Security for large data</td>
-                                    <td>Higher</td>
-                                    <td>Lower</td>
-                                </tr>
-                                <tr>
-                                    <td>Key Distribution</td>
-                                    <td>Difficult</td>
-                                    <td>Easier</td>
-                                </tr>
-                                <tr>
-                                    <td>Key Length</td>
-                                    <td>Shorter (128-256 bits)</td>
-                                    <td>Longer (2048+ bits)</td>
-                                </tr>
-                                <tr>
-                                    <td>Use Cases</td>
-                                    <td>Bulk data encryption</td>
-                                    <td>Key exchange, digital signatures</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </section>
-                </div>
-                
-                <!-- Slide 7 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h3>Real-World Applications & Hybrid Systems</h3>
-                        <h4>Symmetric Encryption Applications</h4>
-                        <ul>
-                            <li>File encryption</li>
-                            <li>Database encryption</li>
-                            <li>Hardware encryption</li>
-                            <li>Streaming data protection</li>
-                            <li>Session encryption in TLS/SSL</li>
-                        </ul>
-                        <h4>Asymmetric Encryption Applications</h4>
-                        <ul>
-                            <li>Digital signatures</li>
-                            <li>SSL/TLS certificates</li>
-                            <li>Secure email (PGP/GPG)</li>
-                            <li>Cryptocurrency systems</li>
-                            <li>Secure key exchange</li>
-                        </ul>
-                        <h4>Hybrid Systems: The Best of Both Worlds</h4>
-                        <p>Most modern security systems use both encryption types together:</p>
-                        <ol>
-                            <li>Asymmetric encryption is used to securely exchange a symmetric key</li>
-                            <li>Symmetric encryption is then used for the actual data exchange</li>
-                        </ol>
-                    </section>
-                </div>
-                
-                <!-- Slide 8 -->
-                <div class="slide">
-                    <section class="module-section">
-                        <h3>Practical Examples & Conclusion</h3>
-                        <h4>HTTPS Connection Example</h4>
-                        <ol>
-                            <li>Your browser gets the website's public key (from its SSL certificate)</li>
-                            <li>Browser generates a random symmetric key</li>
-                            <li>Browser encrypts this symmetric key using the website's public key</li>
-                            <li>Website decrypts it using its private key</li>
-                            <li>Both sides now have the same symmetric key to encrypt all further communications</li>
-                        </ol>
-                        <h4>Conclusion</h4>
-                        <p>Both symmetric and asymmetric encryption play crucial roles in modern security:</p>
-                        <ul>
-                            <li>Symmetric encryption offers speed and efficiency but presents key distribution challenges</li>
-                            <li>Asymmetric encryption solves key distribution but is slower and more resource-intensive</li>
-                            <li>Together, they form comprehensive security systems that protect our digital world</li>
-                        </ul>
-                    </section>
-                    <button class="start-quiz" data-quiz="encryption-types">Start Encryption Types Quiz</button>
-                </div>
-            </div>
-        </div>
-    `,
-    // Define quiz questions for this specific lesson
-    quiz: [
-        {
-            question: "Which type of encryption uses the same key for both encryption and decryption?",
-            options: ["Symmetric", "Asymmetric", "Hashing", "Hybrid"],
-            answer: "Symmetric"
-        },
-        {
-            question: "What is the main advantage of asymmetric encryption over symmetric encryption?",
-            options: ["It's faster for bulk data", "It solves the key distribution problem", "It uses shorter keys", "It doesn't require algorithms"],
-            answer: "It solves the key distribution problem"
-        },
-        {
-            question: "In a hybrid encryption system (like HTTPS), what is asymmetric encryption typically used for?",
-            options: ["Encrypting the entire data stream", "Hashing passwords", "Securely exchanging a symmetric key", "Compressing data"],
-            answer: "Securely exchanging a symmetric key"
-        },
-        {
-            question: "Which of these is a common symmetric encryption algorithm?",
-            options: ["RSA", "ECC", "AES", "SHA-256"],
-            answer: "AES"
-        },
-        {
-            question: "Which of these is a common asymmetric encryption algorithm?",
-            options: ["AES", "DES", "RSA", "ChaCha20"],
-            answer: "RSA"
-        }
-    ],
-    // Add initialization function for slides
-    init: function(contentElement) {
-        const slides = contentElement.querySelectorAll('.slide');
-        const prevButton = contentElement.querySelector('#prev-slide');
-        const nextButton = contentElement.querySelector('#next-slide');
-        const slideCounter = contentElement.querySelector('#slide-counter');
-        let currentSlide = 0;
-        
-        function updateSlides() {
-            slides.forEach((slide, index) => {
-                slide.classList.toggle('active', index === currentSlide);
-            });
-            
-            prevButton.disabled = currentSlide === 0;
-            nextButton.disabled = currentSlide === slides.length - 1;
-            slideCounter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
-        }
-        
-        prevButton.addEventListener('click', () => {
-            if (currentSlide > 0) {
-                currentSlide--;
-                updateSlides();
+        `,
+        // Define quiz questions for this specific lesson
+        quiz: [
+            {
+                question: "Which type of encryption uses the same key for both encryption and decryption?",
+                options: ["Symmetric", "Asymmetric", "Hashing", "Hybrid"],
+                answer: "Symmetric"
+            },
+            {
+                question: "What is the main advantage of asymmetric encryption over symmetric encryption?",
+                options: ["It's faster for bulk data", "It solves the key distribution problem", "It uses shorter keys", "It doesn't require algorithms"],
+                answer: "It solves the key distribution problem"
+            },
+            {
+                question: "In a hybrid encryption system (like HTTPS), what is asymmetric encryption typically used for?",
+                options: ["Encrypting the entire data stream", "Hashing passwords", "Securely exchanging a symmetric key", "Compressing data"],
+                answer: "Securely exchanging a symmetric key"
+            },
+            {
+                question: "Which of these is a common symmetric encryption algorithm?",
+                options: ["RSA", "ECC", "AES", "SHA-256"],
+                answer: "AES"
+            },
+             {
+                question: "Which of these is a common asymmetric encryption algorithm?",
+                options: ["AES", "DES", "RSA", "ChaCha20"],
+                answer: "RSA"
             }
-        });
-        
-        nextButton.addEventListener('click', () => {
-            if (currentSlide < slides.length - 1) {
-                currentSlide++;
-                updateSlides();
+            // Add more quiz questions relevant to the Symmetric/Asymmetric lesson here
+        ],
+        // Add initialization function for slides
+        init: function(contentElement) {
+            console.log('Initializing slideshow for encryption-types module...');
+            const slides = contentElement.querySelectorAll('#slides .slide');
+            const prevButton = contentElement.querySelector('#prev-slide');
+            const nextButton = contentElement.querySelector('#next-slide');
+            const slideCounter = contentElement.querySelector('#slide-counter');
+            let currentSlide = 0;
+
+            function updateSlides() {
+                console.log('Updating slides. Current slide:', currentSlide);
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === currentSlide);
+                });
+
+                prevButton.disabled = currentSlide === 0;
+                nextButton.disabled = currentSlide === slides.length - 1;
+                slideCounter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
             }
-        });
-        
-        // Initialize
-        updateSlides();
-    }
-}
-    
+
+            // Add event listeners only if buttons exist
+            if (prevButton) {
+                 prevButton.addEventListener('click', () => {
+                     console.log('Previous button clicked.');
+                     if (currentSlide > 0) {
+                         currentSlide--;
+                         updateSlides();
+                     }
+                 });
+            } else {
+                console.warn('Previous slide button not found.');
+            }
+
+            if (nextButton) {
+                 nextButton.addEventListener('click', () => {
+                     console.log('Next button clicked.');
+                     if (currentSlide < slides.length - 1) {
+                         currentSlide++;
+                         updateSlides();
+                     }
+                 });
+            } else {
+                 console.warn('Next slide button not found.');
+            }
+
+
+            // Initialize the first slide view
+            updateSlides();
+             console.log('Slideshow initialization complete.');
+        }
+    },
+
     compression: {
         title: 'Compression Module',
         html: `
