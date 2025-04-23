@@ -1,5 +1,5 @@
 // main.js
-
+import * as auth from './auth.js';
 // Import the modules data from modules.js
 import { modules } from './modules.js';
 
@@ -319,6 +319,139 @@ document.addEventListener('DOMContentLoaded', () => {
     // This would involve getting form data, potentially hashing passwords (if registering),
     // and interacting with IndexedDB or a backend for authentication and user data storage.
     // ==============================================================
+    const loginButton = document.createElement('button');
+loginButton.textContent = auth.isLoggedIn() ? 'My Account' : 'Login';
+loginButton.id = 'login-button';
+loginButton.classList.add('login-button');
+document.querySelector('header').appendChild(loginButton);
+
+loginButton.addEventListener('click', () => {
+    if (auth.isLoggedIn()) {
+        // Go to profile page
+        loadContent('profile');
+        // Update active nav button
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        const profileButton = document.querySelector('button[data-module="profile"]');
+        if (profileButton) profileButton.classList.add('active');
+    } else {
+        showModal(authModal);
+        setupAuthForm();
+    }
+});
+
+function setupAuthForm() {
+    const authTitle = document.getElementById('auth-title');
+    const authForm = document.getElementById('auth-form');
+    const authSubmit = document.getElementById('auth-submit');
+    const authSwitch = document.getElementById('switch-form');
+    const authMessage = document.getElementById('auth-message');
+    
+    let isLoginMode = true;
+    
+    // Setup the form mode toggle
+    authSwitch.addEventListener('click', (e) => {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        authTitle.textContent = isLoginMode ? 'Login' : 'Register';
+        authSubmit.textContent = isLoginMode ? 'Login' : 'Register';
+        authSwitch.parentElement.innerHTML = isLoginMode ? 
+            'Don\'t have an account? <a href="#" id="switch-form">Register</a>' : 
+            'Already have an account? <a href="#" id="switch-form">Login</a>';
+        
+        // Re-attach event listener to the new link
+        document.getElementById('switch-form').addEventListener('click', (e) => {
+            e.preventDefault();
+            setupAuthForm();
+        });
+        
+        authMessage.textContent = '';
+    });
+    
+    // Handle form submission
+    authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        let result;
+        if (isLoginMode) {
+            result = auth.login(username, password);
+        } else {
+            result = auth.register(username, password);
+        }
+        
+        if (result.success) {
+            hideModal(authModal);
+            loginButton.textContent = 'My Account';
+            loadContent('profile');
+            // Update active nav button
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            const profileButton = document.querySelector('button[data-module="profile"]');
+            if (profileButton) profileButton.classList.add('active');
+        } else {
+            authMessage.textContent = result.message;
+            authMessage.className = 'message error';
+        }
+    });
+}
+
+// Update the displayUserProfile function
+function displayUserProfile() {
+    if (!auth.isLoggedIn()) {
+        contentArea.innerHTML = `
+            <h2>My Progress</h2>
+            <p>Please log in to view your progress.</p>
+            <button id="profile-login">Login</button>
+        `;
+        document.getElementById('profile-login').addEventListener('click', () => {
+            showModal(authModal);
+            setupAuthForm();
+        });
+        return;
+    }
+    
+    const username = auth.getCurrentUser();
+    const progress = auth.getUserProgress();
+    const scores = auth.getUserScores();
+    
+    let completedModules = Object.keys(progress).filter(module => progress[module]);
+    let completedHtml = completedModules.length > 0 ? 
+        completedModules.map(module => modules[module]?.title || module).join(', ') : 
+        'None yet.';
+    
+    let scoresHtml = '';
+    if (Object.keys(scores).length > 0) {
+        scoresHtml = Object.keys(scores).map(module => {
+            const scoreData = scores[module];
+            return `<p>${modules[module]?.title || module}: ${scoreData.score}/${scoreData.totalQuestions}</p>`;
+        }).join('');
+    } else {
+        scoresHtml = 'No scores recorded.';
+    }
+    
+    contentArea.querySelector('#completed-modules').innerHTML = completedHtml;
+    contentArea.querySelector('#quiz-scores').innerHTML = scoresHtml;
+    
+    // Add logout button
+    const logoutSection = document.createElement('section');
+    logoutSection.className = 'module-section';
+    logoutSection.innerHTML = `
+        <h3>Account</h3>
+        <p>Logged in as: <strong>${username}</strong></p>
+        <button id="logout-button">Logout</button>
+    `;
+    contentArea.appendChild(logoutSection);
+    
+    document.getElementById('logout-button').addEventListener('click', () => {
+        auth.logout();
+        loginButton.textContent = 'Login';
+        loadContent('home');
+        // Update active nav button
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        const homeButton = document.querySelector('button[data-module="home"]');
+        if (homeButton) homeButton.classList.add('active');
+    });
+}
 
 
     console.log('main.js initialization complete.');
