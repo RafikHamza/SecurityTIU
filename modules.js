@@ -26,7 +26,7 @@ export const modules = {
             <section class="module-section">
                  <h3>Latest Updates</h3>
                  <p>Stay tuned for new modules and features!</p>
-            </section>
+                 </section>
         `
     },
     encryption: {
@@ -55,7 +55,7 @@ export const modules = {
              <section class="module-section">
                  <h3>How Encryption Works (Simplified)</h3>
                  <p>Imagine scrambling a message so only your friend with a special decoder ring can read it. The scrambling is encryption, the decoder ring is the key.</p>
-             </section>
+                 </section>
              <button class="start-quiz" data-quiz="encryption">Start Encryption Quiz</button>
         `,
         // Define quiz questions for the encryption module
@@ -98,7 +98,7 @@ export const modules = {
              <section class="module-section">
                  <h3>Common Compression Algorithms</h3>
                  <p>Learn about algorithms like Huffman Coding, Lempel-Ziv (LZ77, LZ78, LZW), and run-length encoding.</p>
-             </section>
+                 </section>
              <button class="start-quiz" data-quiz="compression">Start Compression Quiz</button>
         `,
          // Define quiz questions for the compression module
@@ -189,7 +189,7 @@ export const modules = {
             <section class="module-section">
                 <h3>Account Settings</h3>
                 <p>Area for user settings (if applicable).</p>
-            </section>
+                 </section>
         `
         // Profile page typically doesn't have a quiz directly
     }
