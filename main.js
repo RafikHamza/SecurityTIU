@@ -132,38 +132,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to handle quiz button clicks
     // Function to handle quiz button clicks
-function handleQuizButtonClick(event) {
-    // Get the module name from the data attribute
-    const moduleName = event.target.getAttribute('data-quiz-module');
-    console.log(`Quiz button clicked for module: ${moduleName}`);
-
-    const moduleData = modules[moduleName];
-
-    if (moduleData && moduleData.quiz && quizModal) {
-        const quizQuestions = moduleData.quiz;
-        const modalContentArea = quizModal.querySelector('.modal-content'); // Assuming you have a div with class 'modal-content' inside #quiz-modal
-
-        if (modalContentArea) {
-            // Clear previous quiz content
-            modalContentArea.innerHTML = '';
-
-            // Add quiz title and questions
-            let quizHtml = `<h3>${moduleData.title} Quiz</h3>`;
-            quizQuestions.forEach((q, index) => {
-                quizHtml += `
-                    <div class="quiz-question">
-                        <p>${index + 1}. ${q.question}</p>
-                        <div class="quiz-options">
-                            ${q.options.map((option, optIndex) => `
-                                <label>
-                                    <input type="radio" name="question-${index}" value="${option}">
-                                    ${option}
-                                </label><br>
-                            `).join('')}
+    function handleQuizButtonClick(event) {
+        // Get the module name from the data attribute
+        const moduleName = event.target.getAttribute('data-quiz-module');
+        console.log(`Quiz button clicked for module: ${moduleName}`);
+    
+        const moduleData = modules[moduleName];
+    
+        if (moduleData && moduleData.quiz && quizModal) {
+            const quizQuestions = moduleData.quiz;
+            const modalContentArea = quizModal.querySelector('.modal-content'); // Assuming you have a div with class 'modal-content' inside #quiz-modal
+    
+            if (modalContentArea) {
+                // Clear previous quiz content
+                modalContentArea.innerHTML = '';
+    
+                // Add quiz title and questions
+                let quizHtml = `<h3>${moduleData.title} Quiz</h3>`;
+                quizQuestions.forEach((q, index) => {
+                    quizHtml += `
+                        <div class="quiz-question">
+                            <p>${index + 1}. ${q.question}</p>
+                            <div class="quiz-options">
+                                ${q.options.map((option, optIndex) => `
+                                    <label>
+                                        <input type="radio" name="question-${index}" value="${option}">
+                                        ${option}
+                                    </label><br>
+                                `).join('')}
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
             // Add a submit button and a close button
             quizHtml += `<button class="submit-quiz" data-quiz-module="${moduleName}">Submit Quiz</button>`;
