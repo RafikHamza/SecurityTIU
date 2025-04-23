@@ -2,8 +2,8 @@
 
 // Import the modules data from modules.js
 import { modules } from './modules.js';
-// Import functions from auth.js if main.js needs to call them (e.g., showAuthModal)
-// import { showAuthModal } from './auth.js'; // Uncomment if main.js needs to trigger auth modal
+// auth.js is no longer needed, so remove the import:
+// import { showAuthModal } from './auth.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get main elements
     const contentArea = document.getElementById('content');
     const quizModal = document.getElementById('quiz-modal');
-    // authModal is now primarily managed by auth.js, main.js doesn't need a direct reference here
+    // authModal is removed from index.html, so remove the reference:
     // const authModal = document.getElementById('auth-modal');
 
 
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Quiz modal with id="quiz-modal" not found. Quiz feature will be limited.');
         // Continue execution, but quiz functionality will be broken without the modal
     }
-     // authModal check is now done in auth.js
+     // authModal check is removed
 
 
     // --- Modal Functions (Basic show/hide for quiz modal) ---
@@ -53,24 +53,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // This uses event delegation on the body for elements with the class 'close-modal' or clicking the modal overlay
     document.body.addEventListener('click', (event) => {
         // Close modal when clicking the background overlay
-        if (event.target.classList.contains('modal') && (event.target.id === 'quiz-modal' || event.target.id === 'auth-modal')) {
+        // Only check for quiz-modal now, as auth-modal is removed
+        if (event.target.classList.contains('modal') && event.target.id === 'quiz-modal') {
              hideModal(event.target);
-             if (event.target.id === 'quiz-modal') {
-                 // TODO: Add logic to reset quiz state if closed mid-quiz
-             }
-             // Auth modal closing logic is also handled here
+             // TODO: Add logic to reset quiz state if closed mid-quiz
         }
 
         // Close modal when clicking a button with class 'close-modal'
         if (event.target.classList.contains('close-modal')) {
             const modal = event.target.closest('.modal');
-            if (modal) {
+            // Only check for quiz-modal now, as auth-modal is removed
+            if (modal && modal.id === 'quiz-modal') {
                 hideModal(modal);
-                 if (modal.id === 'quiz-modal') {
-                     // TODO: Add logic to reset quiz state if closed mid-quiz
-                 }
-                 // Auth modal closing logic is also handled here
+                // TODO: Add logic to reset quiz state if closed mid-quiz
             }
+             // If you add a close button to the profile page itself, this might trigger unexpectedly.
+             // Consider making modal close buttons more specific (e.g., .modal .close-button)
+             // or adding checks here if needed.
         }
     });
 
@@ -91,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // --- IMPORTANT: Initialize Module Specific Scripts ---
             // If the module data has an 'init' function, call it after loading the HTML.
-            // This is crucial for modules with interactive elements like the slideshow.
+            // This is crucial for modules with interactive elements like the slideshow or profile page.
             if (typeof moduleData.init === 'function') {
                 console.log(`Calling init function for module: ${moduleName}`);
                 moduleData.init(contentArea); // Pass the content area element if needed by init
@@ -101,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // After loading content, check for and attach event listeners to any quiz buttons
             // This needs to be done *after* the new content is added to the DOM
-            if (moduleData.quiz && moduleName !== 'profile') { // Only add quiz button listener if quiz data exists and not on profile page
+            // Check if quiz data exists and if the module is not the profile page
+            if (moduleData.quiz && moduleName !== 'profile') {
                  const quizButton = contentArea.querySelector('.start-quiz');
                  if (quizButton) {
                      console.log(`Found quiz button for ${moduleName}. Attaching listener.`);
@@ -111,11 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  } else {
                      console.log(`Quiz data exists for ${moduleName}, but no .start-quiz button found.`);
                  }
-             } else if (moduleName === 'profile') {
-                 // TODO: Add logic here to load and display user progress/scores on the profile page
-                 console.log('Profile module loaded. Implement logic to show user data.');
-                 displayUserProfile(); // Call a function to populate profile data
              }
+             // Profile page initialization is handled by its moduleData.init function now
 
 
             // TODO: Add logic here to initialize other interactive elements within the loaded content
@@ -233,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // TODO: IMPLEMENT QUIZ RESULT DISPLAY AND POTENTIALLY SAVE SCORE
         // 1. Display the score to the user (e.g., in the modal or a new section).
         // 2. Provide feedback on correct/incorrect answers.
-        // 3. Potentially save the score (requires IndexedDB or a backend).
+        // 3. Potentially save the score (requires IndexedDB using the pseudoid).
         // 4. Offer an option to retry the quiz or close the modal.
         // ==============================================================
 
@@ -269,22 +266,19 @@ document.addEventListener('DOMContentLoaded', () => {
              // Close button listener is handled by the delegated listener on document.body
         }
 
-        // TODO: Save score to IndexedDB or backend if implementing progress tracking
-        // saveQuizScore(moduleName, score); // Example function call
+        // TODO: Save score to IndexedDB using the current pseudoid
+        // You would need a way to access the currently loaded pseudoid here.
+        // This might involve storing it in a global variable or fetching it from the profile module.
+        // Example: saveQuizScoreToIndexedDB(currentPseudoid, moduleName, score, totalQuestions);
     }
 
     // TODO: Function to display user profile data (requires data storage)
+    // This logic is now primarily handled within the profile module's init function
     function displayUserProfile() {
-        console.log('Displaying user profile data...');
-        // This function would fetch user data (e.g., from IndexedDB)
-        // and populate the #completed-modules and #quiz-scores elements
-        // on the profile page.
-
-        // Example placeholder:
-        // const completedModulesElement = document.getElementById('completed-modules');
-        // const quizScoresElement = document.getElementById('quiz-scores');
-        // if (completedModulesElement) completedModulesElement.textContent = 'Encryption, Compression'; // Example
-        // if (quizScoresElement) quizScoresElement.innerHTML = '<p>Encryption: 3/3</p><p>Compression: 2/3</p>'; // Example
+        console.log('displayUserProfile function called in main.js - logic is now in modules.js profile init.');
+        // The actual display logic is in modules.js -> profile -> init
+        // This function might be used if main.js needed to trigger a profile data refresh
+        // from outside the profile module itself.
     }
 
 
@@ -306,8 +300,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active'); // Add active class to the clicked button
             } else {
                 console.warn('Navigation button missing data-module attribute or module not found in data:', button, moduleName);
-                // Optionally load a 'not found' message
-                 loadContent('notfound'); // Load the 'notfound' module if the requested one doesn't exist
+                // Optionally load a 'not found' module if the requested one doesn't exist
+                 loadContent('notfound');
             }
         });
     });
@@ -320,17 +314,14 @@ document.addEventListener('DOMContentLoaded', () => {
         homeButton.classList.add('active');
     }
 
-    // NOTE: Authentication modal triggering is now handled by auth.js
-    // The login button listener is in auth.js
-    // If main.js needed to trigger it (e.g., showAuthModal() on profile page if not logged in),
-    // you would uncomment the import and call the function here.
+    // Authentication logic is now handled by the pseudoid input on the profile page
+    // The auth modal and auth.js file are removed.
 
 
     console.log('main.js initialization complete.');
 });
 
-// NOTE ABOUT IndexedDB or Backend:
-// To save quiz scores or track user progress persistently, you will need
-// a storage mechanism. IndexedDB is a browser-based database suitable
-// for client-side storage. For multi-device access or more robust
-// user management, a backend server and database would be necessary.
+// NOTE ABOUT IndexedDB for Progress:
+// IndexedDB is used in modules.js -> profile -> init for saving and loading progress.
+// You will need to enhance the quiz submission logic in main.js to get the current
+// pseudoid and call the saveProgress function from modules.js.
